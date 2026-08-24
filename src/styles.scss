@@ -1,1 +1,36 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+    --couleur-fond: #faf9f6;
+    --couleur-carte: #ffffff;
+  --couleur-bordure: #e5e3dd;
+  --couleur-texte: #2b2a27;
+  --couleur-texte-discret: #8a887f;
+  --couleur-accent: #e0473a;      
+  --couleur-selection: #4a7dfd;  
+  --rayon: 10px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--couleur-fond);
+  color: var(--couleur-texte);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: 1px solid var(--couleur-bordure);
+  background: var(--couleur-carte);
+  border-radius: var(--rayon);
+  padding: 8px 12px;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}

@@ -1,0 +1,24 @@
+.app {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 16px;
+  padding: 16px;
+  min-height: 100vh;
+}
+
+.bandeau-erreur {
+  grid-column: 1 / -1;
+  background: #fde8e6;
+  color: var(--couleur-accent);
+  border: 1px solid var(--couleur-accent);
+  border-radius: var(--rayon);
+  padding: 10px 14px;
+  font-size: 14px;
+}
+
+.indicateur-chargement {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--couleur-texte-discret);
+  font-size: 14px;
+}

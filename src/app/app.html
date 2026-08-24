@@ -1,25 +1,25 @@
 <main class="app">
-  @if (erreur) {
-    <div class="bandeau-erreur">{{ erreur }}</div>
+  @if (erreur()) {
+    <div class="bandeau-erreur">{{ erreur() }}</div>
   }
 
   <app-viewer
-    [imageBase64]="imageActuelle"
-    [imageOriginaleBase64]="imageOriginale"
-    [vueComparaison]="vueComparaison">
+    [imageBase64]="imageActuelle()"
+    [imageOriginaleBase64]="imageOriginale()"
+    [vueComparaison]="vueComparaison()">
   </app-viewer>
 
-  @if (chargement) {
+  @if (chargement()) {
     <div class="indicateur-chargement">Traitement en cours…</div>
   }
 
-  @if (histogramme) {
-    <app-histogram [canaux]="histogramme"></app-histogram>
+  @if (histogramme()) {
+    <app-histogram [canaux]="histogramme()"></app-histogram>
   }
 
   <app-toolbar
-    [historique]="historique"
-    [traitementEnCours]="chargement"
+    [historique]="historique()"
+    [traitementEnCours]="chargement()"
     (imageImportee)="onImageImportee($event)"
     (traitementDemande)="onTraitementDemande($event)"
     (parametreModifie)="onParametreModifie($event)"

@@ -1,0 +1,112 @@
+.toolbar {
+  background: var(--couleur-carte);
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.bouton-import {
+  display: block;
+  text-align: center;
+  padding: 10px;
+  border: 1px dashed var(--couleur-bordure);
+  border-radius: var(--rayon);
+  font-size: 13px;
+  color: var(--couleur-texte-discret);
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--couleur-selection);
+    color: var(--couleur-selection);
+  }
+}
+
+.onglets {
+  display: flex;
+  border-bottom: 1px solid var(--couleur-bordure);
+
+  button {
+    flex: 1;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    padding: 8px 0;
+    font-size: 13px;
+    color: var(--couleur-texte-discret);
+    border-bottom: 2px solid transparent;
+
+    &.actif {
+      color: var(--couleur-accent);
+      border-bottom-color: var(--couleur-accent);
+      font-weight: 600;
+    }
+  }
+}
+
+// --- Onglet Traitements ---
+.liste-traitements {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  button {
+    text-align: left;
+    font-size: 13px;
+  }
+}
+
+.reglages {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--couleur-texte-discret);
+  }
+
+  input[type="range"] {
+    accent-color: var(--couleur-selection);
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+
+  button {
+    flex: 1;
+    font-size: 13px;
+  }
+
+  .exporter {
+    background: var(--couleur-accent);
+    color: white;
+    border-color: var(--couleur-accent);
+  }
+}
+
+.historique {
+  border-top: 1px solid var(--couleur-bordure);
+  padding-top: 12px;
+
+  h4 {
+    margin: 0 0 8px;
+    font-size: 12px;
+    color: var(--couleur-texte-discret);
+    font-weight: 500;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 16px;
+    font-size: 12px;
+    color: var(--couleur-texte);
+  }
+}

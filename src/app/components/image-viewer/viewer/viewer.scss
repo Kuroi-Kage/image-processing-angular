@@ -1,0 +1,53 @@
+.image-viewer {
+  background: var(--couleur-carte);
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon);
+  padding: 16px;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  p {
+    color: var(--couleur-texte-discret);
+    font-size: 14px;
+  }
+
+  img {
+    max-width: 100%;
+    max-height: 70vh;
+    border-radius: 6px;
+    display: block;
+  }
+}
+
+.comparaison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  width: 100%;
+
+  > div {
+    position: relative;
+    text-align: center;
+  }
+
+  img {
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+  }
+}
+
+.badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(0, 0, 0, 0.65);
+  color: white;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
