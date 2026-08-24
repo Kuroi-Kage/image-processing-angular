@@ -1,3 +1,3 @@
 export const environment = {
-    apiBaseUrl: 'https://traitements-dimage.onrender.com',
+    apiBaseUrl: 'https://traitements-dimage.onrender.com/api',
 };
