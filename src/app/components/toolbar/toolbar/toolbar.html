@@ -1,0 +1,59 @@
+<div class="toolbar">
+  <label class="bouton-import">
+    Importer une image
+    <input type="file" accept="image/*" (change)="onFichierChoisi($event)" hidden>
+  </label>
+
+  <div class="onglets">
+    <button (click)="ongletActif = 'reglages'" [class.actif]="ongletActif === 'reglages'">Réglages</button>
+    <button (click)="ongletActif = 'traitements'" [class.actif]="ongletActif === 'traitements'">Traitements</button>
+  </div>
+
+  @if (ongletActif === 'traitements') {
+    <div class="liste-traitements">
+      <button (click)="demanderTraitement('niveau_de_gris')" [disabled]="traitementEnCours">Niveaux de gris</button>
+      <button (click)="demanderTraitement('egalisation')" [disabled]="traitementEnCours">Égaliser</button>
+      <button (click)="demanderTraitement('binarisation')" [disabled]="traitementEnCours">Binariser</button>
+      <button (click)="demanderTraitement('filtrage')" [disabled]="traitementEnCours">Filtrer / débruiter</button>
+      <button (click)="demanderTraitement('contours')" [disabled]="traitementEnCours">Contours</button>
+    </div>
+  } @else {
+    <div class="reglages">
+      <label>
+        Seuil de binarisation ({{ seuilBinarisation }})
+        <input type="range" min="0" max="255" [(ngModel)]="seuilBinarisation"
+               (change)="onParametreChange('seuil_binarisation', seuilBinarisation)">
+      </label>
+      <label>
+        Taille du noyau ({{ tailleNoyauFiltre }} px)
+        <input type="range" min="1" max="15" step="2" [(ngModel)]="tailleNoyauFiltre"
+               (change)="onParametreChange('taille_noyau_filtre', tailleNoyauFiltre)">
+      </label>
+      <label>
+        Seuil bas (Canny) ({{ seuilBasContours }})
+        <input type="range" min="0" max="255" [(ngModel)]="seuilBasContours"
+               (change)="onParametreChange('seuil_bas_contours', seuilBasContours)">
+      </label>
+      <label>
+        Seuil haut (Canny) ({{ seuilHautContours }})
+        <input type="range" min="0" max="255" [(ngModel)]="seuilHautContours"
+               (change)="onParametreChange('seuil_haut_contours', seuilHautContours)">
+      </label>
+    </div>
+  }
+
+  <div class="actions">
+    <button (click)="annulerDemande.emit()">Annuler</button>
+    <button (click)="comparaisonBasculee.emit()">Vue comparaison</button>
+    <button (click)="exporterDemande.emit()" class="exporter">Exporter</button>
+  </div>
+
+  <div class="historique">
+    <h4>Historique — {{ historique.length }} action(s)</h4>
+    <ul>
+      @for (etape of historique; track $index) {
+        <li>{{ etape }}</li>
+      }
+    </ul>
+  </div>
+</div>

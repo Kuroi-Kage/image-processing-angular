@@ -1,0 +1,18 @@
+<div class="image-viewer">
+    @if (!imageBase64) {
+        <p>Aucune image importée</p>
+    }@else if (vueComparaison && imageOriginaleBase64) {
+        <div class="comparaison">
+            <div>
+                <span class="badge"> Original</span>
+                <img [src]="'data:image/png;base64,' + imageOriginaleBase64" alt="Image originale">
+            </div>
+            <div >
+                <span class="badge">Modifiée</span>
+                <img [src]="'data:image/png;base64,' + imageBase64" alt="Image modifiée">
+            </div>
+        </div>
+    } @else {
+        <img [src]="'data:image/png;base64,' + imageBase64" alt="Image courante">
+    }
+</div>
