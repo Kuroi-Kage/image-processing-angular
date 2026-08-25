@@ -1,5 +1,6 @@
 :host {
   display: flex;
+  min-height: 0;
 }
 
 .icon {
@@ -322,3 +323,16 @@
     background: var(--muted);
   }
 }
+
+@media (min-width: 1024px) {
+  :host {
+    overflow: hidden;
+  }
+}
+
+@media (max-width: 1023px) {
+  :host {
+    overflow: visible;
+  }
+}
+
