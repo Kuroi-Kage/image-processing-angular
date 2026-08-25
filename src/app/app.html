@@ -1,30 +1,67 @@
 <main class="app">
-  @if (erreur()) {
-    <div class="bandeau-erreur">{{ erreur() }}</div>
-  }
+  <aside class="rail">
+    <div class="rail-logo">
+      <lucide-angular [img]="ImagePlus" class="icon"></lucide-angular>
+    </div>
+    <nav class="rail-nav" aria-label="Navigation principale">
+      <button class="rail-btn actif" aria-label="Éditeur">
+        <lucide-angular [img]="FileImage" class="icon"></lucide-angular>
+      </button>
+      <button class="rail-btn" aria-label="Calques">
+        <lucide-angular [img]="Layers3" class="icon"></lucide-angular>
+      </button>
+      <button class="rail-btn" aria-label="Galerie">
+        <lucide-angular [img]="Grid2X2" class="icon"></lucide-angular>
+      </button>
+    </nav>
+    <button class="rail-btn" aria-label="Aide">
+      <lucide-angular [img]="CircleHelp" class="icon"></lucide-angular>
+    </button>
+  </aside>
 
-  <app-viewer
-    [imageBase64]="imageActuelle()"
-    [imageOriginaleBase64]="imageOriginale()"
-    [vueComparaison]="vueComparaison()">
-  </app-viewer>
+  <section class="contenu">
+    <header class="entete">
+      <div class="entete-titre">
+        <div>
+          <p class="libelle">Projet sans titre</p>
+          <h1>{{ nomFichier() }}</h1>
+        </div>
+        <lucide-angular [img]="ChevronDown" class="icon icon-discret"></lucide-angular>
+      </div>
+      <div class="entete-actions">
+        <button (click)="onAnnulerDemande()" class="btn-discret">
+          <lucide-angular [img]="Undo2" class="icon"></lucide-angular> Annuler
+        </button>
+        <button class="btn-discret">
+          <lucide-angular [img]="Redo2" class="icon"></lucide-angular> Rétablir
+        </button>
+        <button (click)="onExporterDemande()" class="btn-primaire">
+          <lucide-angular [img]="Download" class="icon"></lucide-angular> Exporter
+        </button>
+      </div>
+    </header>
 
-  @if (chargement()) {
-    <div class="indicateur-chargement">Traitement en cours…</div>
-  }
+    @if (erreur()) {
+      <div class="bandeau-erreur">{{ erreur() }}</div>
+    }
 
-  @if (histogramme()) {
-    <app-histogram [canaux]="histogramme()"></app-histogram>
-  }
+    <div class="corps">
+      <app-viewer
+        [imageBase64]="imageActuelle()"
+        [imageOriginaleBase64]="imageOriginale()"
+        [vueComparaison]="vueComparaison()"
+        [chargement]="chargement()"
+        [histogramme]="histogramme()"
+        (comparaisonBasculee)="onComparaisonBasculee()">
+      </app-viewer>
 
-  <app-toolbar
-    [historique]="historique()"
-    [traitementEnCours]="chargement()"
-    (imageImportee)="onImageImportee($event)"
-    (traitementDemande)="onTraitementDemande($event)"
-    (parametreModifie)="onParametreModifie($event)"
-    (annulerDemande)="onAnnulerDemande()"
-    (exporterDemande)="onExporterDemande()"
-    (comparaisonBasculee)="onComparaisonBasculee()">
-  </app-toolbar>
+      <app-toolbar
+        [historique]="historique()"
+        [traitementEnCours]="chargement()"
+        (imageImportee)="onImageImportee($event)"
+        (traitementDemande)="onTraitementDemande($event)"
+        (parametreModifie)="onParametreModifie($event)">
+      </app-toolbar>
+    </div>
+  </section>
 </main>

@@ -1,10 +1,24 @@
 import { Component, EventEmitter, input, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms'
 import { NomTraitement, ParametreRequete } from '../../../models/image';
+import {
+  LucideAngularModule, MousePointer2, Crop, Eraser, WandSparkles,
+  RotateCcw, SlidersHorizontal, Upload,
+} from 'lucide-angular';
 
+
+interface Outil {
+  label: string;
+  icon: any;
+}
+
+interface Traitement {
+  label: string;
+  key: NomTraitement;
+}
 @Component({
   selector: 'app-toolbar',
-  imports: [FormsModule],
+  imports: [FormsModule, LucideAngularModule],
   templateUrl: './toolbar.html',
   styleUrl: './toolbar.scss',
 })
@@ -16,9 +30,30 @@ export class Toolbar {
   @Output() imageImportee = new EventEmitter<File>();
   @Output() traitementDemande = new EventEmitter<NomTraitement>();
   @Output() parametreModifie = new EventEmitter<ParametreRequete>();
-  @Output() annulerDemande = new EventEmitter<void>();
-  @Output() exporterDemande = new EventEmitter<void>();
-  @Output() comparaisonBasculee = new EventEmitter<void>();
+
+
+  readonly RotateCcw = RotateCcw;
+  readonly SlidersHorizontal = SlidersHorizontal;
+  readonly WandSparkles = WandSparkles;
+  readonly Upload = Upload;
+
+  readonly outils: Outil[] = [
+    { label: 'Sélection', icon: MousePointer2 },
+    { label: 'Recadrer', icon: Crop },
+    { label: 'Effacer', icon: Eraser },
+    { label: 'Améliorer', icon: WandSparkles },
+  ];
+
+  readonly traitements: Traitement[] = [
+    { label: 'Niveaux de gris', key: 'niveau_de_gris' },
+    { label: 'Égaliser', key: 'egalisation' },
+    { label: 'Binariser', key: 'binarisation' },
+    { label: 'Filtrer / débruiter', key: 'filtrage' },
+    { label: 'Contours', key: 'contours' },
+  ];
+
+  outilActif = 'Sélection';
+  instructions = '';
 
   ongletActif: 'reglages' | 'traitements' = 'traitements'
 
@@ -32,6 +67,14 @@ export class Toolbar {
     if (input.files && input.files.length > 0) {
       this.imageImportee.emit(input.files[0]);
     }
+  }
+
+  choisirOutil(label: string) {
+    this.outilActif = label;
+  }
+
+  reinitialiserOutil() {
+    this.outilActif = 'Sélection';
   }
 
   demanderTraitement(nom: NomTraitement) {
