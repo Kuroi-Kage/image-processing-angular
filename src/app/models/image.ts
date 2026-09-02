@@ -29,5 +29,12 @@ export type NomTraitement =
 | 'filtrage'
 | 'contours';
 
+export interface InstructionsRequete {
+    instructions: string;
+}
 
+export interface InstructionsResponse {
+    image: string;
+    traitements_appliques: string[]
+}
 

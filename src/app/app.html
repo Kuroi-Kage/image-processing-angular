@@ -52,15 +52,22 @@
         [vueComparaison]="vueComparaison()"
         [chargement]="chargement()"
         [histogramme]="histogramme()"
-        (comparaisonBasculee)="onComparaisonBasculee()">
+        (comparaisonBasculee)="onComparaisonBasculee()"
+        [outilActif]="outilActif()"
+        (selectionChange)="onSelectionChange($event)">
       </app-viewer>
 
       <app-toolbar
         [historique]="historique()"
         [traitementEnCours]="chargement()"
+        [outilActif]="outilActif()"
+        (outilChoisi)=" onOutilChoisi($event)"
+        (recadrerDemande)="onRecadrerDemande()"
         (imageImportee)="onImageImportee($event)"
         (traitementDemande)="onTraitementDemande($event)"
-        (parametreModifie)="onParametreModifie($event)">
+        (parametreModifie)="onParametreModifie($event)"
+        (instructionsSoumises)="onInstructionsSoumises($event)">
+
       </app-toolbar>
     </div>
   </section>

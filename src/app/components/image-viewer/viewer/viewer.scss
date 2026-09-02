@@ -52,6 +52,13 @@
   }
 }
 
+
+.entete-actions-viewer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .btn-comparer {
   display: flex;
   align-items: center;
@@ -89,17 +96,36 @@
   }
 }
 
+.zone-image {
+  position: relative;
+  width: min(90%, 700px);
+  height: min(100%, 500px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .image-unique {
-  max-width: 82%;
-  max-height: 100%;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
   border-radius: var(--radius);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+  transition: transform 0.15s ease;
+}
+
+.rectangle-selection {
+  position: absolute;
+  border: 2px dashed var(--primary);
+  background: color-mix(in oklch, var(--primary) 15%, transparent);
+  pointer-events: none;
 }
 
 .comparaison {
   display: flex;
   gap: 1px;
-  width: min(90%, 700px);
+  width: 100%;
+  height: 100%;
   border-radius: var(--radius);
   overflow: hidden;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
@@ -113,8 +139,9 @@
   img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: CONTAIN;
     display: block;
+    transition: transform 0.15s ease;
   }
 }
 
@@ -159,17 +186,9 @@
   }
 }
 
-.barre-zoom {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  right: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
 
-.btn-outil, .btn-zoom {
+
+ .btn-zoom {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -178,11 +197,6 @@
   border-radius: var(--radius);
 }
 
-.btn-outil {
-  border: 1px solid var(--border);
-  background: var(--card);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-}
 
 .controle-zoom {
   display: flex;
@@ -200,11 +214,31 @@
   }
 }
 
+.ligne-cartes {
+  display: flex;
+  gap: 16px;
+
+  .bloc-histogramme {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
 .bloc-histogramme {
   border: 1px solid var(--border);
   background: color-mix(in oklch, var(--card) 70%, transparent);
   border-radius: var(--radius-xl);
   padding: 12px;
+}
+
+.bloc-vide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80px;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  border-style: dashed;
 }
 
 .entete-histogramme {
@@ -217,11 +251,6 @@
 
   .icon-primaire { color: var(--primary); }
 
-  .tag-api {
-    margin-left: auto;
-    font-size: 10px;
-    color: var(--muted-foreground);
-  }
 }
 
 @media (max-width: 1023px) {

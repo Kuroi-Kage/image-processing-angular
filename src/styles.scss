@@ -41,6 +41,17 @@ button {
   }
 }
 
+lucide-angular {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+
+  svg {
+    display: block;
+  }
+}
+
 @media (min-width: 1024px) {
   body {
      overflow: hidden;

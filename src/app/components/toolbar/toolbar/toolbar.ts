@@ -30,6 +30,10 @@ export class Toolbar {
   @Output() imageImportee = new EventEmitter<File>();
   @Output() traitementDemande = new EventEmitter<NomTraitement>();
   @Output() parametreModifie = new EventEmitter<ParametreRequete>();
+  @Output() instructionsSoumises = new EventEmitter<string>();
+  @Input() outilActif = 'Sélection';
+  @Output() outilChoisi = new EventEmitter<string>();
+  @Output() recadrerDemande = new EventEmitter<void>();
 
 
   readonly RotateCcw = RotateCcw;
@@ -52,7 +56,6 @@ export class Toolbar {
     { label: 'Contours', key: 'contours' },
   ];
 
-  outilActif = 'Sélection';
   instructions = '';
 
   ongletActif: 'reglages' | 'traitements' = 'traitements'
@@ -70,7 +73,7 @@ export class Toolbar {
   }
 
   choisirOutil(label: string) {
-    this.outilActif = label;
+    this.outilChoisi.emit(label);
   }
 
   reinitialiserOutil() {
@@ -80,7 +83,7 @@ export class Toolbar {
   demanderTraitement(nom: NomTraitement) {
     this.traitementDemande.emit(nom);
   }
-
+  
   onParametreChange(cle:string, valeur: number) {
     this.parametreModifie.emit({ cle, valeur });
   }

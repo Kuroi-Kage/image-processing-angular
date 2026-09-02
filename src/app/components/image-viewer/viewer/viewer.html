@@ -1,34 +1,68 @@
 <div class="viewer">
-  <div class="viewer-entete">
-    <div>
-      <p class="libelle">Aperçu r</p>
-      <p class="sous-titre">Original · image en cours de traitement</p>
+    <div class="viewer-entete">
+        <div>
+            <p class="libelle">Aperçu </p>
+            <!--p class="sous-titre">Original · image en cours de traitement</p-->
+        </div>
+        <div class="entete-actions-viewer">
+            @if (imageBase64) {
+            <div class="controle-zoom">
+                <button (click)="zoomArriere()" [disabled]="zoom <= 50" class="btn-zoom" aria-label="Zoom arrière">
+                    <lucide-angular [img]="ZoomOut" class="icon"></lucide-angular>
+                </button>
+                <span class="valeur-zoom">{{ zoom }}%</span>
+                <button (click)="zoomAvant()" [disabled]="zoom >= 200" class="btn-zoom" aria-label="Zoom avant">
+                    <lucide-angular [img]="ZoomIn" class="icon"></lucide-angular>
+                </button>
+                @if (zoom !== 100) {
+                <button (click)="reinitialiserZoom()" class="btn-zoom" aria-label="Réinitialiser le zoom">
+                    <lucide-angular [img]="RotateCcw" class="icon"></lucide-angular>
+                </button>
+                }
+            </div>
+            }
+            <button (click)="comparaisonBasculee.emit()" class="btn-comparer">
+                <lucide-angular [img]="Eye" class="icon"></lucide-angular>
+                {{ vueComparaison ? 'Vue unique' : 'Avant / Après' }}
+            </button>
+        </div>
     </div>
-    <button (click)="comparaisonBasculee.emit()" class="btn-comparer">
-      <lucide-angular [img]="Eye" class="icon"></lucide-angular>
-      {{ vueComparaison ? 'Vue unique' : 'Comparer avant / après' }}
-    </button>
-  </div>
 
-  <div class="cadre-image">
-    @if (!imageBase64) {
-      <p class="aucune-image">Aucune image importée</p>
-    } @else if (vueComparaison && imageOriginaleBase64) {
-      <div class="comparaison">
-        <div>
-          <img [src]="'data:image/png;base64,' + imageOriginaleBase64" alt="Image originale">
-          <span class="badge">Original</span>
+    <div class="cadre-image">
+        @if (!imageBase64) {
+        <p class="aucune-image">Aucune image importée</p>
+        } @else if (vueComparaison && imageOriginaleBase64) {
+        <div class="comparaison">
+            <div>
+                <img [src]="'data:image/png;base64,' + imageOriginaleBase64" alt="Image originale"
+                    [style.transform]="'scale(' + (zoom / 100) + ')'">
+                <span class="badge">Original</span>
+            </div>
+            <div>
+                <img [src]="'data:image/png;base64,' + imageBase64" alt="Image modifiée"
+                    [style.transform]="'scale(' + (zoom / 100) + ')'">
+                <span class="badge">Modifiée</span>
+            </div>
         </div>
-        <div>
-          <img [src]="'data:image/png;base64,' + imageBase64" alt="Image modifiée">
-          <span class="badge">Modifiée</span>
+        } @else {
+        <img 
+        #imageAffichee
+        [src]="'data:image/png;base64,' + imageBase64" alt="Image courante" class="image-unique"
+            [style.transform]="'scale(' + (zoom / 100) + ')'"
+            (mousedown)="onMouseDown($event, imageAffichee)"
+            (mouseup)="onMouseUp(imageAffichee)"
+            >
+        @if (selectionCourante) {
+            <div class="rectangle-selection"
+            [style.left.px]="selectionCourante.x"
+            [style.top.px]="selectionCourante.y"
+            [style.width.px]="selectionCourante.largeur"
+            [style.height.px]="selectionCourante.hauteur">
         </div>
-      </div>
-    } @else {
-      <img [src]="'data:image/png;base64,' + imageBase64" alt="Image courante" class="image-unique">
-    }
+        }
+        }
 
-    @if (chargement) {
+         @if (chargement) {
       <div class="overlay-chargement">
         <div class="pastille">
           <lucide-angular [img]="LoaderCircle" class="icon icon-spin"></lucide-angular>
@@ -37,32 +71,22 @@
       </div>
     }
 
-    @if (imageBase64) {
-      <div class="barre-zoom">
-        <button class="btn-outil" aria-label="Outil main">
-          <lucide-angular [img]="MousePointer2" class="icon"></lucide-angular>
-        </button>
-        <div class="controle-zoom">
-          <button (click)="zoomArriere()" class="btn-zoom" aria-label="Zoom arrière">
-            <lucide-angular [img]="ZoomOut" class="icon"></lucide-angular>
-          </button>
-          <span class="valeur-zoom">{{ zoom }}%</span>
-          <button (click)="zoomAvant()" class="btn-zoom" aria-label="Zoom avant">
-            <lucide-angular [img]="ZoomIn" class="icon"></lucide-angular>
-          </button>
-        </div>
-      </div>
-    }
-  </div>
-
-  @if (histogramme) {
-    <div class="bloc-histogramme">
-      <div class="entete-histogramme">
-        <lucide-angular [img]="BarChart3" class="icon icon-primaire"></lucide-angular>
-        Histogramme de luminance
-        <!--span class="tag-api">API FastAPI</span-->
-      </div>
-      <app-histogram [canaux]="histogramme"></app-histogram>
     </div>
-  }
+
+    @if (histogramme) {
+    <div class="ligne-cartes">
+        <div class="bloc-histogramme">
+            <div class="entete-histogramme">
+                <lucide-angular [img]="BarChart3" class="icon icon-primaire"></lucide-angular>
+                Histogramme de luminance
+                <!--span class="tag-api">API FastAPI</span-->
+            </div>
+            <app-histogram [canaux]="histogramme"></app-histogram>
+        </div>
+
+        <div class="bloc-histogramme bloc-vide">
+            <!-- Vide -->
+        </div>
+    </div>
+    }
 </div>

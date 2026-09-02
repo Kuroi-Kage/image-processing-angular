@@ -30,17 +30,19 @@
         <lucide-angular [img]="WandSparkles" class="icon icon-primaire"></lucide-angular>
         <div>
           <h3>Instructions</h3>
-          <p>Décrivez le traitement souhaité pour guider l'analyse.</p>
+          <p>Décrivez le traitement souhaité.</p>
         </div>
       </div>
       <textarea
         [(ngModel)]="instructions"
-        placeholder="Ex. Éclaircir le visage et réduire le bruit…"
+        placeholder="Décrivez le traitement souhaité…"
         maxlength="500">
       </textarea>
       <div class="pied-instructions">
         <span>{{ instructions.length }}/500 caractères</span>
-        <button class="btn-enregistrer">Enregistrer</button>
+       <button class="btn-enregistrer" (click)="instructionsSoumises.emit(instructions)" [disabled]="!instructions.trim()">
+  Enregistrer
+</button>
       </div>
     </section>
 

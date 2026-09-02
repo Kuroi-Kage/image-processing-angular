@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { ImportResponse, TraitementResponse, AnnulerResponse, HistogrammeResponse, NomTraitement, ParametreRequete } from '../models/image';
+import { ImportResponse, TraitementResponse, AnnulerResponse, HistogrammeResponse, NomTraitement, ParametreRequete, InstructionsResponse, InstructionsRequete } from '../models/image';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -48,4 +48,12 @@ export class ImageService {
       responseType: 'blob',
     });
   }
+
+  interpreterInstructions(sessionId: string, requete: InstructionsRequete): Observable<InstructionsResponse> {
+    return this.http.post<InstructionsResponse>(
+      `${this.baseUrl}/images/${sessionId}/instructions`,
+      requete
+    );
+  }
 }
+

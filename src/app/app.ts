@@ -8,6 +8,7 @@ import {
   LucideAngularModule, ImagePlus, FileImage, Layers3, Grid2X2,
   CircleHelp, ChevronDown, Undo2, Redo2, Download,
 } from 'lucide-angular';
+import { forkJoin } from "rxjs";
 
 
 
@@ -51,8 +52,45 @@ export class App {
   erreur = signal<string | null>(null);
   vueComparaison = signal(true);
 
+  outilActif = signal('Sélection');
+  selectionActuelle = signal<{x: number; y: number; largeur: number; hauteur: number} | null >(null);
+
+
 
   constructor(private imageService: ImageService) {}
+
+  onOutilChoisi(outil: string) {
+    this.outilActif.set(outil);
+  }
+
+  onSelectionChange(selection: {x: number; y: number; largeur: number; hauteur: number} | null) {
+    this.selectionActuelle.set(selection);
+  }
+
+  onRecadrerDemande() {
+    const id = this.sessionId();
+    const zone = this.selectionActuelle();
+    if (!id || !zone) {
+      this.erreur.set("Dessine d'abord une zone à recadrer avec l'outil Sélection")
+      return;
+    }
+    this.chargement.set(true);
+
+    const parametres: ParametreRequete[] = [
+      { cle: 'crop_x', valeur: zone.x },
+      { cle: 'crop_y', valeur: zone.y },
+      { cle: 'crop_largeur', valeur: zone.largeur },
+      { cle: 'crop_hauteur', valeur: zone.hauteur },
+    ];
+
+    forkJoin(parametres.map((p) => this.imageService.configurerParametre(id, p))).subscribe({
+      next: () => this.onTraitementDemande('recadrage' as NomTraitement),
+      error: () => {
+        this.erreur.set("Impossible d'envoyer la zone de recadrage");
+        this.chargement.set(false);
+      },
+    });
+  }
 
 
   onImageImportee(fichier: File) {
@@ -112,6 +150,33 @@ export class App {
       });
   }
 
+    onInstructionsSoumises(instructions: string) {
+    const id = this.sessionId();
+    if (!id) {
+      this.erreur.set("Importe une image avant d'envoyer des instructions.");
+      return;
+    }
+    this.chargement.set(true);
+    this.erreur.set(null);
+
+    this.imageService.interpreterInstructions(id, { instructions }).subscribe({
+      next: (reponse) => {
+        this.imageActuelle.set(reponse.image);
+        const labels = reponse.traitements_appliques.map((nom) => LIBELLES_TRAITEMENT[nom as NomTraitement]);
+        this.historique.update((h) => [...labels.reverse(), ...h].slice(0, 6));
+        this.rafraichirHistograme();
+        this.chargement.set(false);
+      },
+      error: (err) => {
+        this.erreur.set(
+          err.status === 422
+            ? "Aucun traitement reconnu dans cette instruction."
+            : "Le service d'interprétation est momentanément indisponible."
+        );
+        this.chargement.set(false);
+      },
+    });
+  }
 
   onParametreModifie(requete: ParametreRequete) {
     const id = this.sessionId();
