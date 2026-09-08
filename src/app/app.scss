@@ -96,26 +96,42 @@
   align-items: center;
   gap: 12px;
   min-width: 0;
+  flex: 1;
+}
 
-  .libelle {
-    margin: 0;
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    color: var(--muted-foreground);
+.libelle-titre {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-radius: 4px;
+  padding: 4px 6px;
+  margin-left: -6px;
+
+  &.editable {
+    cursor: text;
+
+    &:hover {
+      background: var(--muted);
+    }
+
+    &:focus {
+      outline: 2px solid var(--primary);
+      background: var(--card);
+      text-overflow: clip;
+      white-space: normal;
+    }
   }
 
-  h1 {
-    margin: 2px 0 0;
-    font-size: 16px;
-    font-weight: 600;
-  }
 }
 
 .entete-actions {
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-shrink: 0;
 }
 
 .btn-discret {
@@ -133,6 +149,7 @@
 
   @media (max-width: 600px) {
     padding: 8px;
+
     .btn-label {
       display: none;
     }

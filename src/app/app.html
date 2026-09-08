@@ -22,54 +22,48 @@
   <section class="contenu">
     <header class="entete">
       <div class="entete-titre">
-        <div>
-          <p class="libelle">Projet sans titre</p>
-          <h1>{{ nomFichier() }}</h1>
-        </div>
+
+        <p class="libelle-titre" [class.editable]="imageActuelle()"
+          [attr.contenteditable]="imageActuelle() ? true : null" (blur)="onRenommer($event)"
+          (keydown.enter)="$event.preventDefault(); $any($event.target).blur()"
+          [title]="nomFichier() || ''">
+          {{ imageActuelle() ? 'Nouveau projet' : 'Projet sans titre' }}</p>
+
+
         <lucide-angular [img]="ChevronDown" class="icon icon-discret"></lucide-angular>
       </div>
       <div class="entete-actions">
         <button (click)="onAnnulerDemande()" class="btn-discret">
-          <lucide-angular [img]="Undo2" class="icon"></lucide-angular> 
-         <span class="btn-label"> Annuler</span>
+          <lucide-angular [img]="Undo2" class="icon"></lucide-angular>
+          <span class="btn-label"> Annuler</span>
         </button>
         <button class="btn-discret">
-          <lucide-angular [img]="Redo2" class="icon"></lucide-angular> 
-           <span class="btn-label"> Rétablir</span>
+          <lucide-angular [img]="Redo2" class="icon"></lucide-angular>
+          <span class="btn-label"> Rétablir</span>
         </button>
         <button (click)="onExporterDemande()" class="btn-primaire">
           <lucide-angular [img]="Download" class="icon"></lucide-angular>
-           <span class="btn-label"> Exporter</span>
+          <span class="btn-label"> Exporter</span>
         </button>
       </div>
     </header>
 
     @if (erreur()) {
-      <div class="bandeau-erreur">{{ erreur() }}</div>
+    <div class="bandeau-erreur">{{ erreur() }}</div>
     }
 
     <div class="corps">
-      <app-viewer
-        [imageBase64]="imageActuelle()"
-        [imageOriginaleBase64]="imageOriginale()"
-        [vueComparaison]="vueComparaison()"
-        [chargement]="chargement()"
-        [histogramme]="histogramme()"
-        (comparaisonBasculee)="onComparaisonBasculee()"
-        [outilActif]="outilActif()"
-        (selectionChange)="onSelectionChange($event)">
+      <app-viewer [imageBase64]="imageActuelle()" [imageOriginaleBase64]="imageOriginale()"
+        [vueComparaison]="vueComparaison()" [chargement]="chargement()" [histogramme]="histogramme()"
+        (comparaisonBasculee)="onComparaisonBasculee()" [outilActif]="outilActif()"
+        (selectionChange)="onSelectionChange($event)"
+        (imageImportee)="onImageImportee($event)">
       </app-viewer>
 
-      <app-toolbar
-        [historique]="historique()"
-        [traitementEnCours]="chargement()"
-        [outilActif]="outilActif()"
-        (outilChoisi)=" onOutilChoisi($event)"
-        (recadrerDemande)="onRecadrerDemande()"
-        (imageImportee)="onImageImportee($event)"
-        (traitementDemande)="onTraitementDemande($event)"
-        (parametreModifie)="onParametreModifie($event)"
-        (instructionsSoumises)="onInstructionsSoumises($event)">
+      <app-toolbar [historique]="historique()" [traitementEnCours]="chargement()" [outilActif]="outilActif()"
+        (outilChoisi)=" onOutilChoisi($event)" (recadrerDemande)="onRecadrerDemande()"
+        (traitementDemande)="onTraitementDemande($event)" 
+        (parametreModifie)="onParametreModifie($event)" (instructionsSoumises)="onInstructionsSoumises($event)">
 
       </app-toolbar>
     </div>
