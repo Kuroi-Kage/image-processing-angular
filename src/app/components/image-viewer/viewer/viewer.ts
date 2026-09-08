@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter} from '@angular/core';
-import { LucideAngularModule, Eye, MousePointer2, ZoomIn, ZoomOut, LoaderCircle, BarChart3, RotateCcw } from 'lucide-angular';
+import { LucideAngularModule, Eye, MousePointer2, ZoomIn, ZoomOut, LoaderCircle, BarChart3, RotateCcw, Upload } from 'lucide-angular';
 import { Histogram } from '../../histogram/histogram/histogram';
 
 @Component({
@@ -23,7 +23,8 @@ export class Viewer {
 
   debutSelection: {x: number; y: number } | null = null;
   selectionCourante: { x: number; y: number; largeur: number; hauteur: number} | null = null;
-
+  @Output() imageImportee = new EventEmitter<File>();
+  
 
   zoom = 100;
 
@@ -34,6 +35,14 @@ export class Viewer {
   readonly LoaderCircle = LoaderCircle;
   readonly BarChart3 = BarChart3;
   readonly RotateCcw = RotateCcw;
+  readonly Upload = Upload;
+
+  onFichierChoisi(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.imageImportee.emit(input.files[0]);
+    }
+  }
 
    zoomArriere() {
     this.zoom = Math.max(50, this.zoom - 10);
