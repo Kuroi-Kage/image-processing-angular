@@ -30,13 +30,16 @@
       </div>
       <div class="entete-actions">
         <button (click)="onAnnulerDemande()" class="btn-discret">
-          <lucide-angular [img]="Undo2" class="icon"></lucide-angular> Annuler
+          <lucide-angular [img]="Undo2" class="icon"></lucide-angular> 
+         <span class="btn-label"> Annuler</span>
         </button>
         <button class="btn-discret">
-          <lucide-angular [img]="Redo2" class="icon"></lucide-angular> Rétablir
+          <lucide-angular [img]="Redo2" class="icon"></lucide-angular> 
+           <span class="btn-label"> Rétablir</span>
         </button>
         <button (click)="onExporterDemande()" class="btn-primaire">
-          <lucide-angular [img]="Download" class="icon"></lucide-angular> Exporter
+          <lucide-angular [img]="Download" class="icon"></lucide-angular>
+           <span class="btn-label"> Exporter</span>
         </button>
       </div>
     </header>
