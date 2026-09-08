@@ -5,37 +5,37 @@
             <!--p class="sous-titre">Original · image en cours de traitement</p-->
         </div>
         <div class="entete-actions-viewer">
-  @if (!imageBase64) {
-    <label class="bouton-import-compact">
-      <lucide-angular [img]="Upload" class="icon"></lucide-angular>
-      Importer une image
-      <input type="file" accept="image/*" (change)="onFichierChoisi($event)" hidden>
-    </label>
-  } @else {
-    <label class="btn-zoom" aria-label="Importer une autre image">
-      <lucide-angular [img]="Upload" class="icon"></lucide-angular>
-      <input type="file" accept="image/*" (change)="onFichierChoisi($event)" hidden>
-    </label>
-    <div class="controle-zoom">
-      <button (click)="zoomArriere()" [disabled]="zoom <= 50" class="btn-zoom" aria-label="Zoom arrière">
-        <lucide-angular [img]="ZoomOut" class="icon"></lucide-angular>
-      </button>
-      <span class="valeur-zoom">{{ zoom }}%</span>
-      <button (click)="zoomAvant()" [disabled]="zoom >= 200" class="btn-zoom" aria-label="Zoom avant">
-        <lucide-angular [img]="ZoomIn" class="icon"></lucide-angular>
-      </button>
-      @if (zoom !== 100) {
-        <button (click)="reinitialiserZoom()" class="btn-zoom" aria-label="Réinitialiser le zoom">
-          <lucide-angular [img]="RotateCcw" class="icon"></lucide-angular>
-        </button>
-      }
-    </div>
-    <button (click)="comparaisonBasculee.emit()" class="btn-comparer">
-      <lucide-angular [img]="Eye" class="icon"></lucide-angular>
-      {{ vueComparaison ? 'Vue unique' : 'Avant / Après' }}
-    </button>
-  }
-</div>
+            @if (!imageBase64) {
+            <label class="bouton-import-compact">
+                <lucide-angular [img]="Upload" class="icon"></lucide-angular>
+                Importer une image
+                <input type="file" accept="image/*" (change)="onFichierChoisi($event)" hidden>
+            </label>
+            } @else {
+            <label class="btn-zoom" aria-label="Importer une autre image">
+                <lucide-angular [img]="Upload" class="icon"></lucide-angular>
+                <input type="file" accept="image/*" (change)="onFichierChoisi($event)" hidden>
+            </label>
+            <div class="controle-zoom">
+                <button (click)="zoomArriere()" [disabled]="zoom <= 50" class="btn-zoom" aria-label="Zoom arrière">
+                    <lucide-angular [img]="ZoomOut" class="icon"></lucide-angular>
+                </button>
+                <span class="valeur-zoom">{{ zoom }}%</span>
+                <button (click)="zoomAvant()" [disabled]="zoom >= 200" class="btn-zoom" aria-label="Zoom avant">
+                    <lucide-angular [img]="ZoomIn" class="icon"></lucide-angular>
+                </button>
+                @if (zoom !== 100) {
+                <button (click)="reinitialiserZoom()" class="btn-zoom" aria-label="Réinitialiser le zoom">
+                    <lucide-angular [img]="RotateCcw" class="icon"></lucide-angular>
+                </button>
+                }
+            </div>
+            <button (click)="comparaisonBasculee.emit()" class="btn-comparer">
+                <lucide-angular [img]="Eye" class="icon"></lucide-angular>
+                {{ vueComparaison ? 'Vue unique' : 'Avant / Après' }}
+            </button>
+            }
+        </div>
     </div>
 
     <div class="cadre-image">

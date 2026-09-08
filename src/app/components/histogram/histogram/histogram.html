@@ -1,1 +1,5 @@
 <canvas #canvasHisto width="280" height="80"></canvas>
+<button
+  (click)="outil.label === 'Recadrer' ? recadrerDemande.emit() : choisirOutil(outil.label)"
+  [class.actif]="outilActif === outil.label"
+  class="outil">
