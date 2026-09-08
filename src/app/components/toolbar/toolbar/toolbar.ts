@@ -27,7 +27,7 @@ export class Toolbar {
   @Input() historique: string[] = [];
   @Input() traitementEnCours = false;
 
-  @Output() imageImportee = new EventEmitter<File>();
+//  @Output() imageImportee = new EventEmitter<File>();
   @Output() traitementDemande = new EventEmitter<NomTraitement>();
   @Output() parametreModifie = new EventEmitter<ParametreRequete>();
   @Output() instructionsSoumises = new EventEmitter<string>();
@@ -39,7 +39,7 @@ export class Toolbar {
   readonly RotateCcw = RotateCcw;
   readonly SlidersHorizontal = SlidersHorizontal;
   readonly WandSparkles = WandSparkles;
-  readonly Upload = Upload;
+//  readonly Upload = Upload;
 
   readonly outils: Outil[] = [
     { label: 'Sélection', icon: MousePointer2 },
@@ -49,7 +49,7 @@ export class Toolbar {
   ];
 
   readonly traitements: Traitement[] = [
-    { label: 'Niveaux de gris', key: 'niveau_de_gris' },
+    { label: 'Niveaux de gris', key: 'niveaux_de_gris' },
     { label: 'Égaliser', key: 'egalisation' },
     { label: 'Binariser', key: 'binarisation' },
     { label: 'Filtrer / débruiter', key: 'filtrage' },
@@ -65,12 +65,12 @@ export class Toolbar {
   seuilBasContours = 100;
   seuilHautContours = 200;
 
-  onFichierChoisi(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      this.imageImportee.emit(input.files[0]);
-    }
-  }
+  //onFichierChoisi(event: Event) {
+  //  const input = event.target as HTMLInputElement;
+//    if (input.files && input.files.length > 0) {
+//      this.imageImportee.emit(input.files[0]);
+  //  }
+  //}
 
   choisirOutil(label: string) {
     this.outilChoisi.emit(label);
@@ -87,6 +87,16 @@ export class Toolbar {
   onParametreChange(cle:string, valeur: number) {
     this.parametreModifie.emit({ cle, valeur });
   }
+
+  onClicOutil(outil: Outil) {
+    console.log('clic sur', outil.label, '- actif actuel:', this.outilActif);
+    if (outil.label === 'Recadrer') {
+      this.recadrerDemande.emit();
+    } else {
+      this.choisirOutil(outil.label);
+    }
+  }
+  
 
 
 }

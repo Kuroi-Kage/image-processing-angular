@@ -24,7 +24,7 @@ export interface ParametreRequete {
 
 export type NomTraitement = 
 | 'egalisation' 
-| 'niveau_de_gris'
+| 'niveaux_de_gris'
 | 'binarisation'
 | 'filtrage'
 | 'contours';

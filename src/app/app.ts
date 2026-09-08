@@ -14,7 +14,7 @@ import { forkJoin } from "rxjs";
 
 const LIBELLES_TRAITEMENT: Record<NomTraitement, string> = {
   egalisation: "Égalisation de l'histogramme",
-  niveau_de_gris: "Conversion en niveau de gris",
+  niveaux_de_gris: "Conversion en niveau de gris",
   binarisation: "Binarisation",
   filtrage: "Filtrage / débruitage",
   contours: "Détection de contours",
@@ -53,17 +53,17 @@ export class App {
   vueComparaison = signal(true);
 
   outilActif = signal('Sélection');
-  selectionActuelle = signal<{x: number; y: number; largeur: number; hauteur: number} | null >(null);
+  selectionActuelle = signal<{ x: number; y: number; largeur: number; hauteur: number } | null>(null);
 
 
 
-  constructor(private imageService: ImageService) {}
+  constructor(private imageService: ImageService) { }
 
   onOutilChoisi(outil: string) {
     this.outilActif.set(outil);
   }
 
-  onSelectionChange(selection: {x: number; y: number; largeur: number; hauteur: number} | null) {
+  onSelectionChange(selection: { x: number; y: number; largeur: number; hauteur: number } | null) {
     this.selectionActuelle.set(selection);
   }
 
@@ -130,7 +130,7 @@ export class App {
 
     this.chargement.set(true);
     this.erreur.set(null);
-    
+
     this.imageService
       .appliquerTraitement(id, nom)
       .subscribe({
@@ -150,7 +150,7 @@ export class App {
       });
   }
 
-    onInstructionsSoumises(instructions: string) {
+  onInstructionsSoumises(instructions: string) {
     const id = this.sessionId();
     if (!id) {
       this.erreur.set("Importe une image avant d'envoyer des instructions.");
@@ -238,6 +238,17 @@ export class App {
   onComparaisonBasculee() {
     this.vueComparaison.update(value => !value);
   }
+
+  onRenommer(event: FocusEvent) {
+    if (!this.imageActuelle()) return;
+    const nouveauNom = (event.target as HTMLElement).innerText.trim();
+    if (nouveauNom) {
+      this.nomFichier.set(nouveauNom);
+    } else {
+      (event.target as HTMLElement).innerText = this.nomFichier() ?? '';
+    }
+  }
+
   private rafraichirHistograme(): void {
     const id = this.sessionId();
     if (!id) return;

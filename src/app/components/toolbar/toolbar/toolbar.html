@@ -8,13 +8,10 @@
     </div>
     <div class="grille-outils">
       @for (outil of outils; track outil.label) {
-        <button
-          (click)="choisirOutil(outil.label)"
-          [class.actif]="outilActif === outil.label"
-          class="outil">
-          <lucide-angular [img]="outil.icon" class="icon"></lucide-angular>
-          {{ outil.label }}
-        </button>
+      <button (click)="onClicOutil(outil)" [class.actif]="outilActif === outil.label" class="outil">
+        <lucide-angular [img]="outil.icon" class="icon"></lucide-angular>
+        {{ outil.label }}
+      </button>
       }
     </div>
   </div>
@@ -33,68 +30,66 @@
           <p>Décrivez le traitement souhaité.</p>
         </div>
       </div>
-      <textarea
-        [(ngModel)]="instructions"
-        placeholder="Décrivez le traitement souhaité…"
-        maxlength="500">
+      <textarea [(ngModel)]="instructions" placeholder="Décrivez le traitement souhaité…" maxlength="500">
       </textarea>
       <div class="pied-instructions">
         <span>{{ instructions.length }}/500 caractères</span>
-       <button class="btn-enregistrer" (click)="instructionsSoumises.emit(instructions)" [disabled]="!instructions.trim()">
-  Enregistrer
-</button>
+        <button class="btn-enregistrer" (click)="instructionsSoumises.emit(instructions)"
+          [disabled]="!instructions.trim()">
+          Enregistrer
+        </button>
       </div>
     </section>
 
     @if (ongletActif === 'reglages') {
-      <div class="reglages">
-        <p class="note-reglages">Paramètres envoyés à l'API selon le traitement sélectionné.</p>
+    <div class="reglages">
+      <p class="note-reglages">Paramètres envoyés à l'API selon le traitement sélectionné.</p>
 
-        <label>
-          <span class="ligne-label">
-            <span><lucide-angular [img]="SlidersHorizontal" class="icon"></lucide-angular> Seuil de binarisation</span>
-            <span class="valeur">{{ seuilBinarisation }}</span>
-          </span>
-          <input type="range" min="0" max="255" [(ngModel)]="seuilBinarisation"
-                 (change)="onParametreChange('seuil_binarisation', seuilBinarisation)">
-        </label>
+      <label>
+        <span class="ligne-label">
+          <span><lucide-angular [img]="SlidersHorizontal" class="icon"></lucide-angular> Seuil de binarisation</span>
+          <span class="valeur">{{ seuilBinarisation }}</span>
+        </span>
+        <input type="range" min="0" max="255" [(ngModel)]="seuilBinarisation"
+          (change)="onParametreChange('seuil_binarisation', seuilBinarisation)">
+      </label>
 
-        <label>
-          <span class="ligne-label">
-            <span><lucide-angular [img]="SlidersHorizontal" class="icon"></lucide-angular> Taille du noyau</span>
-            <span class="valeur">{{ tailleNoyauFiltre }} px</span>
-          </span>
-          <input type="range" min="1" max="15" step="2" [(ngModel)]="tailleNoyauFiltre"
-                 (change)="onParametreChange('taille_noyau_filtre', tailleNoyauFiltre)">
-        </label>
+      <label>
+        <span class="ligne-label">
+          <span><lucide-angular [img]="SlidersHorizontal" class="icon"></lucide-angular> Taille du noyau</span>
+          <span class="valeur">{{ tailleNoyauFiltre }} px</span>
+        </span>
+        <input type="range" min="1" max="15" step="2" [(ngModel)]="tailleNoyauFiltre"
+          (change)="onParametreChange('taille_noyau_filtre', tailleNoyauFiltre)">
+      </label>
 
-        <label>
-          <span class="ligne-label">
-            <span><lucide-angular [img]="SlidersHorizontal" class="icon"></lucide-angular> Seuil bas (Canny)</span>
-            <span class="valeur">{{ seuilBasContours }}</span>
-          </span>
-          <input type="range" min="0" max="255" [(ngModel)]="seuilBasContours"
-                 (change)="onParametreChange('seuil_bas_contours', seuilBasContours)">
-        </label>
+      <label>
+        <span class="ligne-label">
+          <span><lucide-angular [img]="SlidersHorizontal" class="icon"></lucide-angular> Seuil bas (Canny)</span>
+          <span class="valeur">{{ seuilBasContours }}</span>
+        </span>
+        <input type="range" min="0" max="255" [(ngModel)]="seuilBasContours"
+          (change)="onParametreChange('seuil_bas_contours', seuilBasContours)">
+      </label>
 
-        <label>
-          <span class="ligne-label">
-            <span><lucide-angular [img]="SlidersHorizontal" class="icon"></lucide-angular> Seuil haut (Canny)</span>
-            <span class="valeur">{{ seuilHautContours }}</span>
-          </span>
-          <input type="range" min="0" max="255" [(ngModel)]="seuilHautContours"
-                 (change)="onParametreChange('seuil_haut_contours', seuilHautContours)">
-        </label>
-      </div>
+      <label>
+        <span class="ligne-label">
+          <span><lucide-angular [img]="SlidersHorizontal" class="icon"></lucide-angular> Seuil haut (Canny)</span>
+          <span class="valeur">{{ seuilHautContours }}</span>
+        </span>
+        <input type="range" min="0" max="255" [(ngModel)]="seuilHautContours"
+          (change)="onParametreChange('seuil_haut_contours', seuilHautContours)">
+      </label>
+    </div>
     } @else {
-      <div class="liste-traitements">
-        @for (traitement of traitements; track traitement.key) {
-          <button (click)="demanderTraitement(traitement.key)" [disabled]="traitementEnCours">
-            {{ traitement.label }}
-            <lucide-angular [img]="WandSparkles" class="icon icon-primaire"></lucide-angular>
-          </button>
-        }
-      </div>
+    <div class="liste-traitements">
+      @for (traitement of traitements; track traitement.key) {
+      <button (click)="demanderTraitement(traitement.key)" [disabled]="traitementEnCours">
+        {{ traitement.label }}
+        <lucide-angular [img]="WandSparkles" class="icon icon-primaire"></lucide-angular>
+      </button>
+      }
+    </div>
     }
 
     <div class="separateur"></div>
@@ -105,23 +100,23 @@
         <span>{{ historique.length }} action{{ historique.length > 1 ? 's' : '' }}</span>
       </div>
       @if (historique.length) {
-        <ol>
-          @for (etape of historique; track $index) {
-            <li>
-              <span class="badge-numero">{{ historique.length - $index }}</span>
-              {{ etape }}
-            </li>
-          }
-        </ol>
+      <ol>
+        @for (etape of historique; track $index) {
+        <li>
+          <span class="badge-numero">{{ historique.length - $index }}</span>
+          {{ etape }}
+        </li>
+        }
+      </ol>
       } @else {
-        <p class="historique-vide">Les traitements appliqués apparaîtront ici.</p>
+      <p class="historique-vide">Les traitements appliqués apparaîtront ici.</p>
       }
     </div>
 
-    <label class="bouton-import">
+    <!--label class="bouton-import">
       <lucide-angular [img]="Upload" class="icon"></lucide-angular>
       Importer une autre image
       <input type="file" accept="image/*" (change)="onFichierChoisi($event)" hidden>
-    </label>
+    </label-->
   </div>
 </div>
