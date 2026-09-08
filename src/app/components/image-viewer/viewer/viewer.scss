@@ -25,10 +25,18 @@
   display: flex;
   flex-direction: column;
   flex: 1;
-  min-height: 520px;
+  min-height: 360px;
   background: color-mix(in oklch, var(--muted) 60%, transparent);
   padding: 20px;
   gap: 16px;
+
+  @media (min-width: 768px) {
+    min-height: 520px;
+  }
+
+  @media(max-width:600px) {
+    padding: 12px;
+  }
 }
 
 .viewer-entete {
@@ -36,6 +44,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  flex-wrap: wrap;
 
   .libelle {
     margin: 0;
@@ -57,6 +66,30 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-wrap: wrap;
+
+  @media (max-width: 480px) {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+.bouton-import-compact {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border);
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.9;
+  }
 }
 
 .btn-comparer {
@@ -129,6 +162,10 @@
   border-radius: var(--radius);
   overflow: hidden;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+  }
 
   > div {
     position: relative;
@@ -217,6 +254,10 @@
 .ligne-cartes {
   display: flex;
   gap: 16px;
+
+  @media (max-width: 767px) {
+    flex-direction: column;
+  }
 
   .bloc-histogramme {
     flex: 1;
