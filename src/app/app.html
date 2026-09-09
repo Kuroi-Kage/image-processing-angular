@@ -25,8 +25,7 @@
 
         <p class="libelle-titre" [class.editable]="imageActuelle()"
           [attr.contenteditable]="imageActuelle() ? true : null" (blur)="onRenommer($event)"
-          (keydown.enter)="$event.preventDefault(); $any($event.target).blur()"
-          [title]="nomFichier() || ''">
+          (keydown.enter)="$event.preventDefault(); $any($event.target).blur()" [title]="nomFichier() || ''">
           {{ imageActuelle() ? 'Nouveau projet' : 'Projet sans titre' }}</p>
 
 
@@ -56,16 +55,21 @@
       <app-viewer [imageBase64]="imageActuelle()" [imageOriginaleBase64]="imageOriginale()"
         [vueComparaison]="vueComparaison()" [chargement]="chargement()" [histogramme]="histogramme()"
         (comparaisonBasculee)="onComparaisonBasculee()" [outilActif]="outilActif()"
-        (selectionChange)="onSelectionChange($event)"
-        (imageImportee)="onImageImportee($event)">
+        (selectionChange)="onSelectionChange($event)" (imageImportee)="onImageImportee($event)"
+        (ouvrirAmelioration)="onOuvrirAmelioration($event)">
       </app-viewer>
 
       <app-toolbar [historique]="historique()" [traitementEnCours]="chargement()" [outilActif]="outilActif()"
         (outilChoisi)=" onOutilChoisi($event)" (recadrerDemande)="onRecadrerDemande()"
-        (traitementDemande)="onTraitementDemande($event)" 
-        (parametreModifie)="onParametreModifie($event)" (instructionsSoumises)="onInstructionsSoumises($event)">
-
+        (traitementDemande)="onTraitementDemande($event)" (parametreModifie)="onParametreModifie($event)"
+        (instructionsSoumises)="onInstructionsSoumises($event)" (effacerDemande)="onEffacerDemande()"
+        (ouvrirAmelioration)="onOuvrirAmelioration(null)">
       </app-toolbar>
+      @if (modalAmeliorationOuvert()) {
+      <app-amelioration-modal [imageBase64]="imageActuelle()" (valider)="onAmeliorerDemande($event)"
+        (annuler)="modalAmeliorationOuvert.set(false)">
+      </app-amelioration-modal>
+      }
     </div>
   </section>
 </main>

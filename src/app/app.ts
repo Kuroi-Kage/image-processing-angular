@@ -9,6 +9,7 @@ import {
   CircleHelp, ChevronDown, Undo2, Redo2, Download,
 } from 'lucide-angular';
 import { forkJoin } from "rxjs";
+import { AmeliorationModal, ReglagesAmelioration } from "./components/modal/amelioration-modal";
 
 
 
@@ -18,13 +19,18 @@ const LIBELLES_TRAITEMENT: Record<NomTraitement, string> = {
   binarisation: "Binarisation",
   filtrage: "Filtrage / débruitage",
   contours: "Détection de contours",
+  rotation: "Rotation",
+  recadrage: "Recadrage",
+  redimensionnement: "Redimensionnement",
+  effacement: "Effacement",
+  amelioration: "Amélioration",
 };
 
 
 @Component({
   selector: "app-root",
   standalone: true,
-  imports: [LucideAngularModule, Viewer, Toolbar],
+  imports: [LucideAngularModule, Viewer, Toolbar, AmeliorationModal],
   templateUrl: "./app.html",
   styleUrl: "./app.scss",
 })
@@ -51,10 +57,11 @@ export class App {
   chargement = signal(false);
   erreur = signal<string | null>(null);
   vueComparaison = signal(true);
+  modalAmeliorationOuvert = signal(false);
 
   outilActif = signal('Sélection');
   selectionActuelle = signal<{ x: number; y: number; largeur: number; hauteur: number } | null>(null);
-
+   suggestionInitiale = signal<{ reglage: string; valeur: number } | null>(null);
 
 
   constructor(private imageService: ImageService) { }
@@ -71,7 +78,7 @@ export class App {
     this.selectionActuelle.set(selection);
   }
 
-  onRecadrerDemande() {
+  private envoyerZoneEtAppliquer(nomTraitement: NomTraitement) {
     const id = this.sessionId();
     const zone = this.selectionActuelle();
     if (!id || !zone) {
@@ -88,12 +95,20 @@ export class App {
     ];
 
     forkJoin(parametres.map((p) => this.imageService.configurerParametre(id, p))).subscribe({
-      next: () => this.onTraitementDemande('recadrage' as NomTraitement),
+      next: () => this.onTraitementDemande(nomTraitement),
       error: () => {
         this.erreur.set("Impossible d'envoyer la zone de recadrage");
         this.chargement.set(false);
       },
     });
+  }
+
+  onRecadrerDemande() {
+    this.envoyerZoneEtAppliquer('recadrage' as NomTraitement);
+  }
+
+  onEffacerDemande() {
+    this.envoyerZoneEtAppliquer('effacement' as NomTraitement);
   }
 
 
@@ -251,6 +266,31 @@ export class App {
     } else {
       (event.target as HTMLElement).innerText = this.nomFichier() ?? '';
     }
+  }
+
+  onAmeliorerDemande(reglages: ReglagesAmelioration) {
+    this.modalAmeliorationOuvert.set(false);
+    const id = this.sessionId();
+    if (!id) {
+      this.erreur.set("Importe une image avant d'appliquer une amélioration.");
+      return;
+    }
+    this.chargement.set(true);
+
+    const parametres: ParametreRequete[] = Object.entries(reglages).map(([cle, valeur]) => ({ cle, valeur }));
+
+    forkJoin(parametres.map((p) => this.imageService.configurerParametre(id, p))).subscribe({
+      next: () => this.onTraitementDemande('amelioration' as NomTraitement),
+      error: () => {
+        this.erreur.set("Impossible d'envoyer les réglages d'amélioration.");
+        this.chargement.set(false);
+      },
+    });
+  }
+
+  onOuvrirAmelioration(suggestion: { reglage: string; valeur: number } | null) {
+    this.suggestionInitiale.set(suggestion);
+    this.modalAmeliorationOuvert.set(true);
   }
 
   private rafraichirHistograme(): void {

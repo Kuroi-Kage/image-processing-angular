@@ -34,6 +34,8 @@ export class Toolbar {
   @Input() outilActif = 'Sélection';
   @Output() outilChoisi = new EventEmitter<string>();
   @Output() recadrerDemande = new EventEmitter<void>();
+  @Output() effacerDemande = new EventEmitter<void>();
+  @Output() ouvrirAmelioration = new EventEmitter<void>();
 
 
   readonly RotateCcw = RotateCcw;
@@ -65,6 +67,15 @@ export class Toolbar {
   seuilBasContours = 100;
   seuilHautContours = 200;
 
+  luminosite = 0;
+  contraste = 0;
+  saturation = 0;
+  exposition = 0;
+  temperature = 0;
+  teinte = 0;
+  nettete = 0;
+  flou = 0;
+
   //onFichierChoisi(event: Event) {
   //  const input = event.target as HTMLInputElement;
 //    if (input.files && input.files.length > 0) {
@@ -89,10 +100,14 @@ export class Toolbar {
   }
 
   onClicOutil(outil: Outil) {
-    console.log('clic sur', outil.label, '- actif actuel:', this.outilActif);
     if (outil.label === 'Recadrer') {
       this.recadrerDemande.emit();
-    } else {
+    } else if (outil.label === 'Effacer') {
+      this.effacerDemande.emit();
+    } else if (outil.label === 'Améliorer') {
+       this.ouvrirAmelioration.emit();
+    }
+    else {
       this.choisirOutil(outil.label);
     }
   }

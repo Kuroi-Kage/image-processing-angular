@@ -1,0 +1,57 @@
+<div class="fond-modal" (click)="annuler.emit()"></div>
+<div class="modal-amelioration">
+    <div class="modal-image">
+        @if (imageBase64) {
+        <div class="cadre-apercu">
+            <img [src]="'data:image/png;base64,' + imageBase64" [style.filter]="filtreApercu" alt="Aperçu">
+        </div>
+        <div class="actions-modal">
+            <button (click)="annuler.emit()" class="btn-annuler">
+                <lucide-angular [img]="X" class="icon"></lucide-angular>
+                Annuler
+            </button>
+            <button (click)="onValider()" class="btn-valider">
+                <lucide-angular [img]="Check" class="icon"></lucide-angular>
+                Valider
+            </button>
+        </div>
+        }
+    </div>
+
+    <div class="modal-reglages">
+        <h3>Améliorer l'image</h3>
+
+        <label>
+            <span class="ligne-label"><span>Luminosité</span><span>{{ luminosite }}</span></span>
+            <input type="range" min="-100" max="100" [(ngModel)]="luminosite">
+        </label>
+        <label>
+            <span class="ligne-label"><span>Contraste</span><span>{{ contraste }}</span></span>
+            <input type="range" min="-100" max="100" [(ngModel)]="contraste">
+        </label>
+        <label>
+            <span class="ligne-label"><span>Saturation</span><span>{{ saturation }}</span></span>
+            <input type="range" min="-100" max="100" [(ngModel)]="saturation">
+        </label>
+        <label>
+            <span class="ligne-label"><span>Exposition</span><span>{{ exposition }}</span></span>
+            <input type="range" min="-100" max="100" [(ngModel)]="exposition">
+        </label>
+        <label>
+            <span class="ligne-label"><span>Température</span><span>{{ temperature }}</span></span>
+            <input type="range" min="-100" max="100" [(ngModel)]="temperature">
+        </label>
+        <label>
+            <span class="ligne-label"><span>Teinte</span><span>{{ teinte }}</span></span>
+            <input type="range" min="-180" max="180" [(ngModel)]="teinte">
+        </label>
+        <label>
+            <span class="ligne-label"><span>Netteté</span><span>{{ nettete }}</span></span>
+            <input type="range" min="0" max="100" [(ngModel)]="nettete">
+        </label>
+        <label>
+            <span class="ligne-label"><span>Flou</span><span>{{ flou }}</span></span>
+            <input type="range" min="0" max="20" [(ngModel)]="flou">
+        </label>
+    </div>
+</div>

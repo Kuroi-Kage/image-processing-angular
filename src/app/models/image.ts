@@ -27,7 +27,13 @@ export type NomTraitement =
 | 'niveaux_de_gris'
 | 'binarisation'
 | 'filtrage'
-| 'contours';
+| 'contours'
+| 'rotation'
+| 'recadrage'
+| 'redimensionnement'
+| 'effacement'
+| 'amelioration';
+
 
 export interface InstructionsRequete {
     instructions: string;

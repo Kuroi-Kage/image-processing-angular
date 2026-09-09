@@ -1,0 +1,139 @@
+:host {
+    display: contents;
+}
+
+.fond-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 100;
+}
+
+.modal-amelioration {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 101;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    background: var(--card);
+    border-radius: var(--radius-2xl);
+    padding: 24px;
+    width: min(90vw, 900px);
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+
+    @media (max-width: 767px) {
+        flex-direction: column;
+        width: 92vw;
+        max-height: 90vh;
+        padding: 16px;
+        gap: 16px;
+    }
+}
+
+.modal-image {
+    flex: 1;
+    min-width: 320px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+
+    @media (max-width: 767px) {
+        min-width: 0;
+    }
+
+    .cadre-apercu {
+        width: 100%;
+        height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--muted);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-xl);
+        overflow: hidden;
+
+        @media (max-width: 767px) {
+            height: 240px;
+        }
+
+        img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+    }
+}
+
+.modal-reglages {
+    width: 280px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    @media (max-width: 767px) {
+        width: 100%;
+    }
+
+    h3 {
+        margin: 0 0 8px;
+    }
+
+    label {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        font-size: 12px;
+    }
+
+    .ligne-label {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    input[type="range"] {
+        accent-color: var(--primary);
+    }
+}
+
+.actions-modal {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+
+    button {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 10px 16px;
+        border-radius: var(--radius-xl);
+        font-size: 13px;
+        font-weight: 600;
+        transition: opacity 0.15s;
+
+        &:hover {
+            opacity: 0.85;
+        }
+    }
+}
+
+.btn-annuler {
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--foreground);
+}
+
+.btn-valider {
+    border: none;
+    background: var(--primary);
+    color: var(--primary-foreground);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}

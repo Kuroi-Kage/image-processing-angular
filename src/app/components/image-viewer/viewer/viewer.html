@@ -84,14 +84,37 @@
         <div class="bloc-histogramme">
             <div class="entete-histogramme">
                 <lucide-angular [img]="BarChart3" class="icon icon-primaire"></lucide-angular>
-                Histogramme de luminance
+                Histogramme
                 <!--span class="tag-api">API FastAPI</span-->
             </div>
             <app-histogram [canaux]="histogramme"></app-histogram>
         </div>
 
-        <div class="bloc-histogramme bloc-vide">
-            <!-- Vide -->
+        <div class="bloc-theorie">
+            @if (statistiquesHistogramme) {
+            <div class="stats-histogramme">
+                <div class="stat">
+                    <span class="valeur-stat">{{ statistiquesHistogramme.moyenne }}</span>
+                    <span class="label-stat">Luminosité moyenne</span>
+                </div>
+                <div class="stat">
+                    <span class="valeur-stat">{{ statistiquesHistogramme.ecartType }}</span>
+                    <span class="label-stat">Écart-type</span>
+                </div>
+            </div>
+            <p class="verdict-contraste">{{ statistiquesHistogramme.contraste }}</p>
+            }
+
+            @if (suggestionAmelioration) {
+            <div class="suggestion">
+                <p>{{ suggestionAmelioration.texte }}</p>
+                <button
+                    (click)="ouvrirAmelioration.emit({ reglage: suggestionAmelioration!.reglage, valeur: suggestionAmelioration!.valeur })"
+                    class="btn-suggestion">
+                    Essayer dans Améliorer
+                </button>
+            </div>
+            }
         </div>
     </div>
     }
