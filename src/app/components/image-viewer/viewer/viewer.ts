@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter} from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { LucideAngularModule, Eye, MousePointer2, ZoomIn, ZoomOut, LoaderCircle, BarChart3, RotateCcw, Upload } from 'lucide-angular';
 import { Histogram } from '../../histogram/histogram/histogram';
 
@@ -19,12 +19,12 @@ export class Viewer {
   @Input() outilActif = 'Selection';
 
   @Output() comparaisonBasculee = new EventEmitter<void>();
-  @Output() selectionChange = new EventEmitter<{x: number; y: number; largeur: number; hauteur: number} | null>();
+  @Output() selectionChange = new EventEmitter<{ x: number; y: number; largeur: number; hauteur: number } | null>();
 
-  debutSelection: {x: number; y: number } | null = null;
-  selectionCourante: { x: number; y: number; largeur: number; hauteur: number} | null = null;
+  debutSelection: { x: number; y: number } | null = null;
+  selectionCourante: { x: number; y: number; largeur: number; hauteur: number } | null = null;
   @Output() imageImportee = new EventEmitter<File>();
-  
+
 
   zoom = 100;
 
@@ -37,6 +37,8 @@ export class Viewer {
   readonly RotateCcw = RotateCcw;
   readonly Upload = Upload;
 
+
+
   onFichierChoisi(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
@@ -44,7 +46,7 @@ export class Viewer {
     }
   }
 
-   zoomArriere() {
+  zoomArriere() {
     this.zoom = Math.max(50, this.zoom - 10);
   }
 
@@ -72,7 +74,7 @@ export class Viewer {
   onMouseDown(event: MouseEvent, imageEl: HTMLImageElement) {
     if (this.outilActif !== 'Sélection') return;
     const rect = imageEl.getBoundingClientRect();
-    this.debutSelection = { x: event.clientX - rect.left, y: event.clientY - rect.top};
+    this.debutSelection = { x: event.clientX - rect.left, y: event.clientY - rect.top };
 
   }
 
@@ -80,15 +82,49 @@ export class Viewer {
     if (!this.selectionCourante) return
     this.debutSelection = null;
 
-    const ratioX = imageEl.naturalWidth / imageEl.clientWidth;
-    const ratioY = imageEl.naturalHeight / imageEl.clientHeight;
+    const { largeurAffichee, hauteurAffichee, decalageX, decalageY } = this.getZoneAffichee(imageEl);
+
+    const ratioX = imageEl.naturalWidth / largeurAffichee;
+    const ratioY = imageEl.naturalHeight / hauteurAffichee;
+
+    const x = Math.min(Math.max(0, this.selectionCourante.x - decalageX), largeurAffichee);
+    const y = Math.min(Math.max(0, this.selectionCourante.y - decalageY), hauteurAffichee);
+    const largeur = Math.min(this.selectionCourante.largeur, largeurAffichee - x);
+    const hauteur = Math.min(this.selectionCourante.hauteur, hauteurAffichee - y);
 
     this.selectionChange.emit({
-      x: Math.round(this.selectionCourante.x * ratioX),
-      y: Math.round(this.selectionCourante.y * ratioX),
-      largeur: Math.round(this.selectionCourante.largeur * ratioX),
-      hauteur: Math.round(this.selectionCourante.hauteur * ratioY),
+      x: Math.round(x * ratioX),
+      y: Math.round(y * ratioY),
+      largeur: Math.round(largeur * ratioX),
+      hauteur: Math.round(hauteur * ratioY),
     });
 
+  }
+
+
+  private getZoneAffichee(imageEl: HTMLImageElement) {
+    const rect = imageEl.getBoundingClientRect();
+    const ratioNaturel = imageEl.naturalWidth / imageEl.naturalHeight;
+    const ratioBoite = rect.width / rect.height;
+
+    let largeurAffichee: number;
+    let hauteurAffichee: number;
+    let decalageX: number;
+    let decalageY: number;
+
+    if (ratioNaturel > ratioBoite) {
+
+      largeurAffichee = rect.width;
+      hauteurAffichee = rect.width / ratioNaturel;
+      decalageX = 0;
+      decalageY = (rect.height - hauteurAffichee) / 2;
+    } else {
+      hauteurAffichee = rect.height;
+      largeurAffichee = rect.height * ratioNaturel;
+      decalageY = 0;
+      decalageX = (rect.width - largeurAffichee) / 2;
+    }
+
+    return { largeurAffichee, hauteurAffichee, decalageX, decalageY };
   }
 }

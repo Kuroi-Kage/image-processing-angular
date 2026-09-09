@@ -55,14 +55,17 @@
             </div>
         </div>
         } @else {
-        <img #imageAffichee [src]="'data:image/png;base64,' + imageBase64" alt="Image courante" class="image-unique"
-            [style.transform]="'scale(' + (zoom / 100) + ')'" (mousedown)="onMouseDown($event, imageAffichee)"
-            (mouseup)="onMouseUp(imageAffichee)">
-        @if (selectionCourante) {
-        <div class="rectangle-selection" [style.left.px]="selectionCourante.x" [style.top.px]="selectionCourante.y"
-            [style.width.px]="selectionCourante.largeur" [style.height.px]="selectionCourante.hauteur">
+        <div class="zone-selection">
+            <img #imageAffichee [src]="'data:image/png;base64,' + imageBase64" alt="Image courante" class="image-unique"
+                [style.transform]="'scale(' + (zoom / 100) + ')'" (mousedown)="onMouseDown($event, imageAffichee)"
+                (mousemove)="onMouseMove($event, imageAffichee)" (mouseup)="onMouseUp(imageAffichee)">
+            @if (selectionCourante) {
+            <div class="rectangle-selection" [style.left.px]="selectionCourante.x" [style.top.px]="selectionCourante.y"
+                [style.width.px]="selectionCourante.largeur" [style.height.px]="selectionCourante.hauteur">
+            </div>
+            }
         </div>
-        }
+
         }
 
         @if (chargement) {

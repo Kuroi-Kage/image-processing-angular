@@ -61,6 +61,10 @@ export class App {
 
   onOutilChoisi(outil: string) {
     this.outilActif.set(outil);
+
+    if (outil === 'Sélection') {
+      this.vueComparaison.set(false);
+    }
   }
 
   onSelectionChange(selection: { x: number; y: number; largeur: number; hauteur: number } | null) {
