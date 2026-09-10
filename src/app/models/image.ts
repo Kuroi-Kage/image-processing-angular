@@ -59,3 +59,22 @@ export interface EtatSessionResponse {
     image_original: string;
 }
 
+export interface Calque {
+  id: string;
+  image: string;
+  visible: boolean;
+  opacite: number;
+  mode_fusion: 'normal' | 'multiplier' | 'ecran' | 'superposition';
+}
+
+export interface AjouterCalqueResponse {
+  id: string;
+  image: string;
+}
+
+export interface ReglageCalqueRequete {
+  visible?: boolean;
+  opacite?: number;
+  mode_fusion?: string;
+}
+

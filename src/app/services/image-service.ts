@@ -2,7 +2,17 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { ImportResponse, TraitementResponse, AnnulerResponse, HistogrammeResponse, NomTraitement, ParametreRequete, InstructionsResponse, InstructionsRequete, RetablirResponse, EtatSessionResponse } from '../models/image';
+import { ImportResponse,
+  TraitementResponse,
+  AnnulerResponse, 
+  HistogrammeResponse, 
+  NomTraitement, 
+  ParametreRequete, 
+  InstructionsResponse, 
+  InstructionsRequete, 
+  RetablirResponse, 
+  EtatSessionResponse, AjouterCalqueResponse, ReglageCalqueRequete
+} from '../models/image';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -63,6 +73,27 @@ export class ImageService {
   retablirTraitement(session_id: string): Observable<RetablirResponse> {
     return this.http.post<RetablirResponse>(`${this.baseUrl}/images/${session_id}/retablir`, {});
   }
+
+  ajouterCalque(sessionId: string): Observable<AjouterCalqueResponse> {
+    return this.http.post<AjouterCalqueResponse>(`${this.baseUrl}/images/${sessionId}/calques`, {});
+  }
+
+  supprimerCalque(sessionId: string, calqueId: string): Observable<{ ok: boolean }> {
+    return this.http.delete<{ ok: boolean }>(`${this.baseUrl}/images/${sessionId}/calques/${calqueId}`);
+  }
+
+  reglerCalque(sessionId: string, calqueId: string, reglages: ReglageCalqueRequete): Observable<{ ok: boolean }> {
+    return this.http.patch<{ ok: boolean }>(`${this.baseUrl}/images/${sessionId}/calques/${calqueId}`, reglages);
+  }
+
+  reordonnerCalques(sessionId: string, ordre: string[]): Observable<{ ok: boolean }> {
+    return this.http.post<{ ok: boolean }>(`${this.baseUrl}/images/${sessionId}/calques/ordre`, { ordre });
+  }
+
+  fusionnerCalques(sessionId: string): Observable<TraitementResponse> {
+    return this.http.post<TraitementResponse>(`${this.baseUrl}/images/${sessionId}/calques/fusionner`, {});
+  }
+
 }
 
 

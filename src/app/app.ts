@@ -1,7 +1,7 @@
 import { ImageService } from "./services/image-service";
 import { Viewer } from "./components/image-viewer/viewer/viewer";
 import { Toolbar } from "./components/toolbar/toolbar/toolbar";
-import { NomTraitement, ParametreRequete } from "./models/image";
+import { Calque, NomTraitement, ParametreRequete } from "./models/image";
 import { Component, signal } from "@angular/core";
 
 import {
@@ -12,6 +12,7 @@ import { forkJoin } from "rxjs";
 import { AmeliorationModal, ReglagesAmelioration } from "./components/modal/amelioration-modal";
 import { AideModal } from "./components/modal/aide-modal/aide-modal";
 import { GalerieModal } from "./components/modal/galerie/galerie-modal";
+import { CalquesModal } from "./components/modal/calque/calques-modal";
 
 
 
@@ -32,7 +33,7 @@ const LIBELLES_TRAITEMENT: Record<NomTraitement, string> = {
 @Component({
   selector: "app-root",
   standalone: true,
-  imports: [LucideAngularModule, Viewer, Toolbar, AmeliorationModal, AideModal, GalerieModal],
+  imports: [LucideAngularModule, Viewer, Toolbar, AmeliorationModal, AideModal, GalerieModal, CalquesModal],
   templateUrl: "./app.html",
   styleUrl: "./app.scss",
 })
@@ -68,6 +69,8 @@ export class App {
   modalAideOuvert = signal(false);
   galerie = signal<{ sessionId: string; nomFichier: string; miniature: string }[]>([]);
   modalGalerieOuvert = signal(false);
+  calques = signal<Calque[]>([]);
+  modalCalquesOuvert = signal(false);
 
   constructor(private imageService: ImageService) { }
 
@@ -339,6 +342,81 @@ export class App {
       },
       error: () => {
         this.erreur.set('Impossible de charger cette image.');
+        this.chargement.set(false);
+      },
+    });
+  }
+
+
+  onAjouterCalque() {
+    const id = this.sessionId();
+    if (!id) return;
+    this.imageService.ajouterCalque(id).subscribe({
+      next: (reponse) => {
+        this.calques.update((c) => [
+          ...c,
+          { id: reponse.id, image: reponse.image, visible: true, opacite: 100, mode_fusion: 'normal' },
+        ]);
+      },
+      error: () => this.erreur.set("Impossible d'ajouter le calque."),
+    });
+  }
+
+  onSupprimerCalque(calqueId: string) {
+    const id = this.sessionId();
+    if (!id) return;
+    this.imageService.supprimerCalque(id, calqueId).subscribe({
+      next: () => this.calques.update((c) => c.filter((cal) => cal.id !== calqueId)),
+      error: () => this.erreur.set('Impossible de supprimer le calque.'),
+    });
+  }
+
+  onReglerCalque(evt: { id: string; reglages: Partial<Calque> }) {
+    const id = this.sessionId();
+    if (!id) return;
+    this.imageService.reglerCalque(id, evt.id, evt.reglages).subscribe({
+      next: () => {
+        this.calques.update((c) =>
+          c.map((cal) => (cal.id === evt.id ? { ...cal, ...evt.reglages } : cal))
+        );
+      },
+      error: () => this.erreur.set('Impossible de mettre à jour le calque.'),
+    });
+  }
+
+  onDeplacerCalque(evt: { id: string; direction: 'haut' | 'bas' }) {
+    const id = this.sessionId();
+    if (!id) return;
+
+    const liste = [...this.calques()];
+    const index = liste.findIndex((c) => c.id === evt.id);
+    const nouvelIndex = evt.direction === 'haut' ? index - 1 : index + 1;
+    if (nouvelIndex < 0 || nouvelIndex >= liste.length) return;
+
+    [liste[index], liste[nouvelIndex]] = [liste[nouvelIndex], liste[index]];
+    this.calques.set(liste);
+
+    this.imageService.reordonnerCalques(id, liste.map((c) => c.id)).subscribe({
+      error: () => this.erreur.set("Impossible de réordonner les calques."),
+    });
+  }
+
+  onFusionnerCalques() {
+    const id = this.sessionId();
+    if (!id) return;
+    this.chargement.set(true);
+
+    this.imageService.fusionnerCalques(id).subscribe({
+      next: (reponse) => {
+        this.imageActuelle.set(reponse.image);
+        this.calques.set([]);
+        this.historique.update((h) => ['Fusion de calques', ...h].slice(0, 6));
+        this.rafraichirHistograme();
+        this.modalCalquesOuvert.set(false);
+        this.chargement.set(false);
+      },
+      error: () => {
+        this.erreur.set('Impossible de fusionner les calques.');
         this.chargement.set(false);
       },
     });

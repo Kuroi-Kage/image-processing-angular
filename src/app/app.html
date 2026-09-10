@@ -7,7 +7,7 @@
       <button class="rail-btn actif" aria-label="Éditeur">
         <lucide-angular [img]="FileImage" class="icon"></lucide-angular>
       </button>
-      <button class="rail-btn" aria-label="Calques">
+      <button class="rail-btn" aria-label="Calques" (click)="modalCalquesOuvert.set(true)">
         <lucide-angular [img]="Layers3" class="icon"></lucide-angular>
       </button>
       <button class="rail-btn" aria-label="Galerie" (click)="modalGalerieOuvert.set(true)">
@@ -80,6 +80,13 @@
       <app-galerie-modal [items]="galerie()" [sessionActive]="sessionId()" (fermer)="modalGalerieOuvert.set(false)"
         (selectionner)="onSelectionnerGalerie($event)">
       </app-galerie-modal>
+      }
+      @if (modalCalquesOuvert()) {
+      <app-calques-modal [calques]="calques()" [imageBase64]="imageActuelle()" (fermer)="modalCalquesOuvert.set(false)"
+        (ajouterCalque)="onAjouterCalque()" (supprimerCalque)="onSupprimerCalque($event)"
+        (reglerCalque)="onReglerCalque($event)" (deplacerCalque)="onDeplacerCalque($event)"
+        (fusionner)="onFusionnerCalques()">
+      </app-calques-modal>
       }
     </div>
   </section>

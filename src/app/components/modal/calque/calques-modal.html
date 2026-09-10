@@ -1,0 +1,82 @@
+<div class="fond-modal" (click)="fermer.emit()"></div>
+<div class="modal-calques">
+    <div class="entete-calques">
+        <h3>Calques</h3>
+        <button (click)="fermer.emit()" class="btn-fermer" aria-label="Fermer">
+            <lucide-angular [img]="X" class="icon"></lucide-angular>
+        </button>
+    </div>
+
+    <div class="cadre-apercu-calques">
+        @if (imageBase64) {
+        <img [src]="'data:image/png;base64,' + imageBase64" alt="Image de base">
+        }
+    </div>
+
+    <button (click)="ajouterCalque.emit()" class="btn-ajouter-calque">
+        <lucide-angular [img]="Plus" class="icon"></lucide-angular>
+        Dupliquer comme nouveau calque
+    </button>
+
+    @if (calques.length === 0) {
+    <!--p class="calques-vide">Aucun calque pour l'instant. Ajoutes-en un pour commencer la composition.</p-->
+    } @else {
+    <div class="liste-calques">
+        @for (calque of calques; track calque.id; let i = $index) {
+        <div class="carte-calque">
+            <img [src]="'data:image/png;base64,' + calque.image" class="miniature-calque" alt="Calque">
+
+            <div class="details-calque">
+                <div class="ligne-actions-calque">
+                    <button (click)="onToggleVisibilite(calque)" class="btn-icone"
+                        [attr.aria-label]="calque.visible ? 'Masquer' : 'Afficher'"
+                        [title]="calque.visible ? 'Masquer' : 'Afficher'">
+
+                        <lucide-angular [img]="calque.visible ? Eye : EyeOff" class="icon" aria-hidden="true">
+                        </lucide-angular>
+
+                        <span class="sr-only">
+                            {{ calque.visible ? 'Masquer' : 'Afficher' }}
+                        </span>
+                    </button>
+                    <span class="nom-calque">Calque {{ i + 1 }}</span>
+                    <button (click)="deplacerCalque.emit({ id: calque.id, direction: 'haut' })" [disabled]="i === 0"
+                        class="btn-icone" aria-label="Monter">
+                        <lucide-angular [img]="ArrowUp" class="icon"></lucide-angular>
+                    </button>
+                    <button (click)="deplacerCalque.emit({ id: calque.id, direction: 'bas' })"
+                        [disabled]="i === calques.length - 1" class="btn-icone" aria-label="Descendre">
+                        <lucide-angular [img]="ArrowDown" class="icon"></lucide-angular>
+                    </button>
+                    <button (click)="supprimerCalque.emit(calque.id)" class="btn-icone btn-supprimer"
+                        aria-label="Supprimer">
+                        <lucide-angular [img]="Trash2" class="icon"></lucide-angular>
+                    </button>
+                </div>
+
+                <label class="ligne-opacite">
+                    <span>Opacité {{ calque.opacite }}%</span>
+                    <input type="range" min="0" max="100" [ngModel]="calque.opacite"
+                        (change)="onChangeOpacite(calque, $any($event.target).value)">
+                </label>
+
+                <select [(ngModel)]="calque.mode_fusion" (ngModelChange)="onChangeMode(calque, $event)"
+                    class="select-mode" aria-label="Mode de fusion">
+
+                    <option value="normal">Normal</option>
+                    <option value="multiplier">Multiplier</option>
+                    <option value="ecran">Écran</option>
+                    <option value="superposition">Superposition</option>
+                </select>
+
+            </div>
+        </div>
+        }
+    </div>
+
+    <button (click)="fusionner.emit()" class="btn-fusionner">
+        <lucide-angular [img]="Layers3" class="icon"></lucide-angular>
+        Fusionner les calques
+    </button>
+    }
+</div>
