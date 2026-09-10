@@ -79,106 +79,101 @@ export class Viewer {
 
   }
 
-  onMouseUp(imageEl: HTMLImageElement) {
-    if (!this.selectionCourante) return
-    this.debutSelection = null;
-
-    const { largeurAffichee, hauteurAffichee, decalageX, decalageY } = this.getZoneAffichee(imageEl);
-
-    const ratioX = imageEl.naturalWidth / largeurAffichee;
-    const ratioY = imageEl.naturalHeight / hauteurAffichee;
-
-    const x = Math.min(Math.max(0, this.selectionCourante.x - decalageX), largeurAffichee);
-    const y = Math.min(Math.max(0, this.selectionCourante.y - decalageY), hauteurAffichee);
-    const largeur = Math.min(this.selectionCourante.largeur, largeurAffichee - x);
-    const hauteur = Math.min(this.selectionCourante.hauteur, hauteurAffichee - y);
-
-    this.selectionChange.emit({
-      x: Math.round(x * ratioX),
-      y: Math.round(y * ratioY),
-      largeur: Math.round(largeur * ratioX),
-      hauteur: Math.round(hauteur * ratioY),
-    });
-
-  }
-
   get suggestionAmelioration(): { texte: string; reglage: string; valeur: number } | null {
     const stats = this.statistiquesHistogramme;
     if (!stats) return null;
 
     if (stats.moyenne < 85) {
       const valeur = Math.min(40, Math.round((100 - stats.moyenne) / 2));
-      return { texte: 'Image plutôt sombre — augmenter la luminosité pourrait aider.', reglage: 'luminosite', valeur };
+      return { texte: 'Image plutôt sombre: augmenter la luminosité pourrait aider.', reglage: 'luminosite', valeur };
     }
     if (stats.moyenne > 170) {
       const valeur = -Math.min(40, Math.round((stats.moyenne - 155) / 2));
-      return { texte: 'Image plutôt claire — réduire légèrement la luminosité pourrait aider.', reglage: 'luminosite', valeur };
+      return { texte: 'Image plutôt claire: réduire légèrement la luminosité pourrait aider.', reglage: 'luminosite', valeur };
     }
     if (stats.ecartType < 30) {
-      return { texte: 'Faible contraste — augmenter le contraste pourrait faire ressortir les détails.', reglage: 'contraste', valeur: 30 };
+      return { texte: 'Faible contraste:  augmenter le contraste pourrait faire ressortir les détails.', reglage: 'contraste', valeur: 30 };
     }
     return null;
   }
 
 
   get statistiquesHistogramme(): { moyenne: number; ecartType: number; contraste: string } | null {
-  if (!this.histogramme || this.histogramme.length < 3) return null;
+    if (!this.histogramme || this.histogramme.length < 3) return null;
 
-  const [r, g, b] = this.histogramme;
-  const poids = [0.299, 0.587, 0.114];
-  const nbIntensites = r.length;
-  const canalLuminance: number[] = new Array(nbIntensites).fill(0);
+    const [r, g, b] = this.histogramme;
+    const poids = [0.299, 0.587, 0.114];
+    const nbIntensites = r.length;
+    const canalLuminance: number[] = new Array(nbIntensites).fill(0);
 
-  [r, g, b].forEach((canal, idxCanal) => {
-    canal.forEach((frequence, intensite) => {
-      canalLuminance[intensite] += frequence * poids[idxCanal];
+    [r, g, b].forEach((canal, idxCanal) => {
+      canal.forEach((frequence, intensite) => {
+        canalLuminance[intensite] += frequence * poids[idxCanal];
+      });
     });
-  });
 
-  const total = canalLuminance.reduce((s, f) => s + f, 0);
-  if (total === 0) return null;
+    const total = canalLuminance.reduce((s, f) => s + f, 0);
+    if (total === 0) return null;
 
-  const moyenne = canalLuminance.reduce((s, f, i) => s + f * i, 0) / total;
-  const variance = canalLuminance.reduce((s, f, i) => s + f * Math.pow(i - moyenne, 2), 0) / total;
-  const ecartType = Math.sqrt(variance);
+    const moyenne = canalLuminance.reduce((s, f, i) => s + f * i, 0) / total;
+    const variance = canalLuminance.reduce((s, f, i) => s + f * Math.pow(i - moyenne, 2), 0) / total;
+    const ecartType = Math.sqrt(variance);
 
-  const contraste = ecartType < 30
-    ? 'Contraste faible'
-    : ecartType > 70
-      ? 'Contraste élevé'
-      : 'Contraste normal';
+    const contraste = ecartType < 30
+      ? 'Contraste faible'
+      : ecartType > 70
+        ? 'Contraste élevé'
+        : 'Contraste normal';
 
-  return {
-    moyenne: Math.round(moyenne),
-    ecartType: Math.round(ecartType),
-    contraste,
-  };
-}
+    return {
+      moyenne: Math.round(moyenne),
+      ecartType: Math.round(ecartType),
+      contraste,
+    };
+  }
 
 
-  private getZoneAffichee(imageEl: HTMLImageElement) {
+  private convertirCoordonnees(imageEl: HTMLImageElement, xEcran: number, yEcran: number) {
+    const modeCouverture = getComputedStyle(imageEl).objectFit === 'cover';
     const rect = imageEl.getBoundingClientRect();
-    const ratioNaturel = imageEl.naturalWidth / imageEl.naturalHeight;
-    const ratioBoite = rect.width / rect.height;
 
-    let largeurAffichee: number;
-    let hauteurAffichee: number;
-    let decalageX: number;
-    let decalageY: number;
+    const scale = modeCouverture
+      ? Math.max(rect.width / imageEl.naturalWidth, rect.height / imageEl.naturalHeight)
+      : Math.min(rect.width / imageEl.naturalWidth, rect.height / imageEl.naturalHeight);
 
-    if (ratioNaturel > ratioBoite) {
+    const largeurAffichee = imageEl.naturalWidth * scale;
+    const hauteurAffichee = imageEl.naturalHeight * scale;
 
-      largeurAffichee = rect.width;
-      hauteurAffichee = rect.width / ratioNaturel;
-      decalageX = 0;
-      decalageY = (rect.height - hauteurAffichee) / 2;
-    } else {
-      hauteurAffichee = rect.height;
-      largeurAffichee = rect.height * ratioNaturel;
-      decalageY = 0;
-      decalageX = (rect.width - largeurAffichee) / 2;
-    }
+    const decalageX = modeCouverture ? (largeurAffichee - rect.width) / 2 : (rect.width - largeurAffichee) / 2;
+    const decalageY = modeCouverture ? (hauteurAffichee - rect.height) / 2 : (rect.height - hauteurAffichee) / 2;
 
-    return { largeurAffichee, hauteurAffichee, decalageX, decalageY };
+    const x = modeCouverture ? (xEcran + decalageX) / scale : (xEcran - decalageX) / scale;
+    const y = modeCouverture ? (yEcran + decalageY) / scale : (yEcran - decalageY) / scale;
+
+    return { x, y };
+  }
+
+  onMouseUp(imageEl: HTMLImageElement) {
+    if (!this.selectionCourante) return;
+    this.debutSelection = null;
+
+    const coinDebut = this.convertirCoordonnees(imageEl, this.selectionCourante.x, this.selectionCourante.y);
+    const coinFin = this.convertirCoordonnees(
+      imageEl,
+      this.selectionCourante.x + this.selectionCourante.largeur,
+      this.selectionCourante.y + this.selectionCourante.hauteur
+    );
+
+    const x = Math.max(0, Math.min(coinDebut.x, imageEl.naturalWidth));
+    const y = Math.max(0, Math.min(coinDebut.y, imageEl.naturalHeight));
+    const xFin = Math.max(0, Math.min(coinFin.x, imageEl.naturalWidth));
+    const yFin = Math.max(0, Math.min(coinFin.y, imageEl.naturalHeight));
+
+    this.selectionChange.emit({
+      x: Math.round(x),
+      y: Math.round(y),
+      largeur: Math.round(xFin - x),
+      hauteur: Math.round(yFin - y),
+    });
   }
 }

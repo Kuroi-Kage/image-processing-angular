@@ -114,6 +114,7 @@
 .cadre-image {
   position: relative;
   flex: 1;
+  min-height: 280px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -126,6 +127,10 @@
   .aucune-image {
     color: var(--muted-foreground);
     font-size: 14px;
+  }
+
+  @media (max-width: 600px) {
+    min-height: 240px;
   }
 }
 
@@ -145,6 +150,10 @@
   border-radius: var(--radius);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
   transition: transform 0.15s ease;
+
+   @media (max-width: 600px) {
+    object-fit: cover;
+  }
 }
 
 .rectangle-selection {
@@ -163,9 +172,9 @@
   overflow: hidden;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
 
-  @media (max-width: 600px) {
-    flex-direction: column;
-  }
+//  @media (max-width: 600px) {
+   // flex-direction: column;
+ // }
 
   > div {
     position: relative;
@@ -273,7 +282,7 @@
   }
 }
 
-.bloc-histogramme
+.bloc-histogramme,
 .bloc-theorie {
   border: 1px solid var(--border);
   background: color-mix(in oklch, var(--card) 70%, transparent);
