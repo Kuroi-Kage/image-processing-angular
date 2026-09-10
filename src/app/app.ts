@@ -10,6 +10,8 @@ import {
 } from 'lucide-angular';
 import { forkJoin } from "rxjs";
 import { AmeliorationModal, ReglagesAmelioration } from "./components/modal/amelioration-modal";
+import { AideModal } from "./components/modal/aide-modal/aide-modal";
+import { GalerieModal } from "./components/modal/galerie/galerie-modal";
 
 
 
@@ -30,7 +32,7 @@ const LIBELLES_TRAITEMENT: Record<NomTraitement, string> = {
 @Component({
   selector: "app-root",
   standalone: true,
-  imports: [LucideAngularModule, Viewer, Toolbar, AmeliorationModal],
+  imports: [LucideAngularModule, Viewer, Toolbar, AmeliorationModal, AideModal, GalerieModal],
   templateUrl: "./app.html",
   styleUrl: "./app.scss",
 })
@@ -61,8 +63,11 @@ export class App {
 
   outilActif = signal('Sélection');
   selectionActuelle = signal<{ x: number; y: number; largeur: number; hauteur: number } | null>(null);
-   suggestionInitiale = signal<{ reglage: string; valeur: number } | null>(null);
-
+  suggestionInitiale = signal<{ reglage: string; valeur: number } | null>(null);
+  avertissement = signal<string | null>(null);
+  modalAideOuvert = signal(false);
+  galerie = signal<{ sessionId: string; nomFichier: string; miniature: string }[]>([]);
+  modalGalerieOuvert = signal(false);
 
   constructor(private imageService: ImageService) { }
 
@@ -123,6 +128,10 @@ export class App {
         this.imageActuelle.set(response.image);
         this.imageOriginale.set(response.image);
         this.historique.set([]);
+        this.galerie.update((g) => [
+          ...g,
+          { sessionId: response.session_id, nomFichier: fichier.name, miniature: response.image },
+        ]);
         this.rafraichirHistograme();
         this.chargement.set(false);
       },
@@ -149,6 +158,7 @@ export class App {
 
     this.chargement.set(true);
     this.erreur.set(null);
+    this.avertissement.set(null);
 
     this.imageService
       .appliquerTraitement(id, nom)
@@ -156,6 +166,9 @@ export class App {
         next: (reponse) => {
           this.imageActuelle.set(reponse.image);
           this.historique.update((h) => [LIBELLES_TRAITEMENT[nom], ...h].slice(0, 6));
+          if (reponse.avertissements && reponse.avertissements.length > 0) {
+            this.avertissement.set(reponse.avertissements.join('.'));
+          }
           this.rafraichirHistograme();
           this.chargement.set(false);
         },
@@ -231,6 +244,24 @@ export class App {
       });
   }
 
+    onRetablirDemande() {
+    const id = this.sessionId();
+    if (!id) return;
+    this.chargement.set(true);
+
+    this.imageService.retablirTraitement(id).subscribe({
+      next: (reponse) => {
+        this.imageActuelle.set(reponse.image);
+        this.rafraichirHistograme();
+        this.chargement.set(false);
+      },
+      error: () => {
+        this.erreur.set("Impossible de rétablir.");
+        this.chargement.set(false);
+      },
+    });
+  }
+
 
   onExporterDemande() {
     const id = this.sessionId();
@@ -243,7 +274,7 @@ export class App {
           const url = URL.createObjectURL(blob);
           const lien = document.createElement("a");
           lien.href = url;
-          lien.download = "image_exportee.png";
+          lien.download = this.construireNomExport();
           lien.click();
           URL.revokeObjectURL(url);
         },
@@ -252,6 +283,7 @@ export class App {
         ),
       });
   }
+
 
 
   onComparaisonBasculee() {
@@ -293,6 +325,25 @@ export class App {
     this.modalAmeliorationOuvert.set(true);
   }
 
+    onSelectionnerGalerie(sessionId: string) {
+    this.chargement.set(true);
+    this.imageService.obtenirEtatSession(sessionId).subscribe({
+      next: (reponse) => {
+        this.sessionId.set(sessionId);
+        this.imageActuelle.set(reponse.image);
+        this.imageOriginale.set(reponse.image_original);
+        this.historique.set([]); 
+        this.rafraichirHistograme();
+        this.modalGalerieOuvert.set(false);
+        this.chargement.set(false);
+      },
+      error: () => {
+        this.erreur.set('Impossible de charger cette image.');
+        this.chargement.set(false);
+      },
+    });
+  }
+
   private rafraichirHistograme(): void {
     const id = this.sessionId();
     if (!id) return;
@@ -309,5 +360,13 @@ export class App {
           );
         }
       });
+  }
+
+  private construireNomExport(): string {
+    const original = this.nomFichier();
+    if (!original) return "image_exportee.png";
+
+    const sansExtension = original.replace(/\.[^/.]+/, "");
+    return `${sansExtension}_modifiee.png`;
   }
 }

@@ -27,7 +27,7 @@
         <lucide-angular [img]="WandSparkles" class="icon icon-primaire"></lucide-angular>
         <div>
           <h3>Instructions</h3>
-          <p>Décrivez le traitement souhaité.</p>
+          <!--p>Décrivez le traitement souhaité.</p-->
         </div>
       </div>
       <textarea [(ngModel)]="instructions" placeholder="Décrivez le traitement souhaité…" maxlength="500">
@@ -43,7 +43,6 @@
 
     @if (ongletActif === 'reglages') {
     <div class="reglages">
-      <p class="note-reglages">Paramètres envoyés à l'API selon le traitement sélectionné.</p>
 
       <label>
         <span class="ligne-label">
@@ -65,7 +64,7 @@
 
       <label>
         <span class="ligne-label">
-          <span><lucide-angular [img]="SlidersHorizontal" class="icon"></lucide-angular> Seuil bas (Canny)</span>
+          <span><lucide-angular [img]="SlidersHorizontal" class="icon"></lucide-angular> Seuil bas</span>
           <span class="valeur">{{ seuilBasContours }}</span>
         </span>
         <input type="range" min="0" max="255" [(ngModel)]="seuilBasContours"
@@ -74,7 +73,7 @@
 
       <label>
         <span class="ligne-label">
-          <span><lucide-angular [img]="SlidersHorizontal" class="icon"></lucide-angular> Seuil haut (Canny)</span>
+          <span><lucide-angular [img]="SlidersHorizontal" class="icon"></lucide-angular> Seuil haut</span>
           <span class="valeur">{{ seuilHautContours }}</span>
         </span>
         <input type="range" min="0" max="255" [(ngModel)]="seuilHautContours"

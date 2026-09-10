@@ -1,0 +1,25 @@
+<div class="fond-modal" (click)="fermer.emit()"></div>
+<div class="modal-galerie">
+  <div class="entete-galerie">
+    <h3>Galerie — {{ items.length }} image{{ items.length > 1 ? 's' : '' }}</h3>
+    <button (click)="fermer.emit()" class="btn-fermer" aria-label="Fermer">
+      <lucide-angular [img]="X" class="icon"></lucide-angular>
+    </button>
+  </div>
+
+  @if (items.length === 0) {
+    <p class="galerie-vide">Aucune image importée dans cette session.</p>
+  } @else {
+    <div class="grille-galerie">
+      @for (item of items; track item.sessionId) {
+        <button
+          class="vignette"
+          [class.active]="item.sessionId === sessionActive"
+          (click)="selectionner.emit(item.sessionId)">
+          <img [src]="'data:image/png;base64,' + item.miniature" alt="item.nomFichier">
+          <span class="nom-vignette">{{ item.nomFichier }}</span>
+        </button>
+      }
+    </div>
+  }
+</div>

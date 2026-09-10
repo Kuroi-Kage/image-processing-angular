@@ -1,0 +1,21 @@
+<div class="fond-modal" (click)="fermer.emit()"></div>
+<div class="modal-aide">
+  <div class="entete-aide">
+    <h3>Guide rapide</h3>
+    <button (click)="fermer.emit()" class="btn-fermer" aria-label="Fermer">
+      <lucide-angular [img]="X" class="icon"></lucide-angular>
+    </button>
+  </div>
+
+  <div class="liste-etapes">
+    @for (etape of etapes; track etape.titre) {
+      <div class="etape-aide">
+        <lucide-angular [img]="etape.icon" class="icon icon-primaire"></lucide-angular>
+        <div>
+          <p class="titre-etape">{{ etape.titre }}</p>
+          <p class="texte-etape">{{ etape.texte }}</p>
+        </div>
+      </div>
+    }
+  </div>
+</div>

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { ImportResponse, TraitementResponse, AnnulerResponse, HistogrammeResponse, NomTraitement, ParametreRequete, InstructionsResponse, InstructionsRequete } from '../models/image';
+import { ImportResponse, TraitementResponse, AnnulerResponse, HistogrammeResponse, NomTraitement, ParametreRequete, InstructionsResponse, InstructionsRequete, RetablirResponse, EtatSessionResponse } from '../models/image';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -55,5 +55,14 @@ export class ImageService {
       requete
     );
   }
+
+  obtenirEtatSession(sessionId: string): Observable<EtatSessionResponse> {
+    return this.http.get<EtatSessionResponse>(`${this.baseUrl}/images/${sessionId}`);
+  }
+
+  retablirTraitement(session_id: string): Observable<RetablirResponse> {
+    return this.http.post<RetablirResponse>(`${this.baseUrl}/images/${session_id}/retablir`, {});
+  }
 }
+
 

@@ -44,3 +44,18 @@ export interface InstructionsResponse {
     traitements_appliques: string[]
 }
 
+export interface TraitementResponse {
+  image: string;
+  avertissements?: string[];
+}
+
+export interface RetablirResponse {
+    retabli: boolean;
+    image: string;
+}
+
+export interface EtatSessionResponse {
+    image: string;
+    image_original: string;
+}
+

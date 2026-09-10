@@ -10,11 +10,11 @@
       <button class="rail-btn" aria-label="Calques">
         <lucide-angular [img]="Layers3" class="icon"></lucide-angular>
       </button>
-      <button class="rail-btn" aria-label="Galerie">
+      <button class="rail-btn" aria-label="Galerie" (click)="modalGalerieOuvert.set(true)">
         <lucide-angular [img]="Grid2X2" class="icon"></lucide-angular>
       </button>
     </nav>
-    <button class="rail-btn" aria-label="Aide">
+    <button class="rail-btn" aria-label="Aide" (click)="modalAideOuvert.set(true)">
       <lucide-angular [img]="CircleHelp" class="icon"></lucide-angular>
     </button>
   </aside>
@@ -36,7 +36,7 @@
           <lucide-angular [img]="Undo2" class="icon"></lucide-angular>
           <span class="btn-label"> Annuler</span>
         </button>
-        <button class="btn-discret">
+        <button (click)="onRetablirDemande()" class="btn-discret">
           <lucide-angular [img]="Redo2" class="icon"></lucide-angular>
           <span class="btn-label"> Rétablir</span>
         </button>
@@ -49,6 +49,9 @@
 
     @if (erreur()) {
     <div class="bandeau-erreur">{{ erreur() }}</div>
+    }
+    @if (avertissement()) {
+    <div class="bandeau-avertissement">{{ avertissement() }} </div>
     }
 
     <div class="corps">
@@ -69,6 +72,14 @@
       <app-amelioration-modal [imageBase64]="imageActuelle()" (valider)="onAmeliorerDemande($event)"
         (annuler)="modalAmeliorationOuvert.set(false)">
       </app-amelioration-modal>
+      }
+      @if (modalAideOuvert()) {
+      <app-aide-modal (fermer)="modalAideOuvert.set(false)"></app-aide-modal>
+      }
+      @if (modalGalerieOuvert()) {
+      <app-galerie-modal [items]="galerie()" [sessionActive]="sessionId()" (fermer)="modalGalerieOuvert.set(false)"
+        (selectionner)="onSelectionnerGalerie($event)">
+      </app-galerie-modal>
       }
     </div>
   </section>

@@ -130,7 +130,7 @@
   }
 
   @media (max-width: 600px) {
-    min-height: 240px;
+    min-height: 420px;
   }
 }
 
@@ -153,6 +153,7 @@
 
    @media (max-width: 600px) {
     object-fit: cover;
+    object-position: center top;
   }
 }
 

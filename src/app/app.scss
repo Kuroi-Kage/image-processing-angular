@@ -187,6 +187,16 @@
   font-size: 13px;
 }
 
+.bandeau-avertissement {
+  margin: 12px 32px 0;
+  background: color-mix(in oklch, var(--primary) 10%, var(--background));
+  color: var(--foreground);
+  border: 1px solid color-mix(in oklch, var(--primary) 30%, transparent);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  font-size: 13px;
+}
+
 .corps {
   display: flex;
   flex-direction: column;
